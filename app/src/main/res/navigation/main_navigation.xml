@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation"
+    android:id="@+id/main_navigation"
     app:startDestination="@+id/navigation_home">
 
     <fragment
@@ -10,16 +10,15 @@
         android:name="jp.hotdrop.stepcountapp.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
-
+    <fragment
+        android:id="@+id/navigation_google_fit"
+        android:name="jp.hotdrop.stepcountapp.ui.googlefit.GoogleFitFragment"
+        android:label="@string/title_google_fit"
+        tools:layout="@layout/fragment_google_fit" />
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="jp.hotdrop.stepcountapp.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
 
-    <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="jp.hotdrop.stepcountapp.ui.notifications.NotificationsFragment"
-        android:label="@string/title_googlefit"
-        tools:layout="@layout/fragment_google_fit" />
 </navigation>

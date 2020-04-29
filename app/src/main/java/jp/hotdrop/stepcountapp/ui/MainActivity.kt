@@ -8,19 +8,26 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import jp.hotdrop.stepcountapp.R
+import jp.hotdrop.stepcountapp.di.component.component
 
 class MainActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        component.inject(this)
+
+        initView()
+    }
+
+    private fun initView() {
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
         val navController = findNavController(R.id.nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(setOf(
             R.id.navigation_home,
-            R.id.navigation_dashboard,
-            R.id.navigation_notifications
+            R.id.navigation_google_fit,
+            R.id.navigation_dashboard
         ))
 
         setupActionBarWithNavController(navController, appBarConfiguration)
