@@ -39,7 +39,7 @@ class StepCounterSensor @Inject constructor(
     private val stepCountEventListener = object : SensorEventListener {
         override fun onSensorChanged(event: SensorEvent?) {
             event?.values?.get(0)?.toLong()?.let { stepCounter ->
-                val calcCounter = calcStepCounter(stepCounter)
+                val calcCounter = calcEffectiveStepCount(stepCounter)
                 mutableCounter.postValue(calcCounter)
             }
         }
@@ -59,10 +59,6 @@ class StepCounterSensor @Inject constructor(
             Timber.d("歩行センサーのregisterListenerの結果がfalseでした。")
             return false
         }
-
-        // TODO これいらなくないか？
-//        mutableCounter.postValue(repository.getStepCounter())
-//        mutableCounterFromLocal.postValue(repository.getAppStartFirstCounter())
 
         Timber.d("リスナーを登録します")
         return sensorManager?.registerListener(stepCountEventListener,
@@ -91,7 +87,7 @@ class StepCounterSensor @Inject constructor(
     /**
      * 有効なアプリ内歩数を取得する
      */
-    private fun calcStepCounter(stepCounter: Long): Long {
+    private fun calcEffectiveStepCount(stepCounter: Long): Long {
         var firstCounter = repository.getAppStartFirstCounter()
         if (firstCounter == 0L) {
             Timber.d("アプリの初回時かリセット後に1度のみ実行: カウンターを初期化")

@@ -16,7 +16,6 @@ import jp.hotdrop.stepcountapp.model.Accuracy
 import jp.hotdrop.stepcountapp.model.DeviceDetail
 import jp.hotdrop.stepcountapp.ui.MainViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
-import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
 class HomeFragment: Fragment() {

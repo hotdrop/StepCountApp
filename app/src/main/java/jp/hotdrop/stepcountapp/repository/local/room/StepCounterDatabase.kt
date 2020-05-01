@@ -15,6 +15,10 @@ class StepCounterDatabase @Inject constructor(
         return dao.select(id)
     }
 
+    suspend fun selectAll(): List<DailyStepCountEntity> {
+        return dao.selectAll()
+    }
+
     suspend fun save(entity: DailyStepCountEntity) {
         dao.insert(entity)
     }
@@ -22,8 +26,12 @@ class StepCounterDatabase @Inject constructor(
 
 @Dao
 interface StepCounterDao {
+
     @Query("SELECT * FROM ${DailyStepCountEntity.TABLE_NAME} WHERE id == :id")
     fun select(id: Long): LiveData<DailyStepCountEntity?>
+
+    @Query("SELECT * FROM ${DailyStepCountEntity.TABLE_NAME}")
+    suspend fun selectAll(): List<DailyStepCountEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: DailyStepCountEntity)

@@ -70,7 +70,7 @@ class MainActivity: AppCompatActivity() {
 
     private fun observe() {
         stepCounterSensor.counter.observe(this, Observer {
-            viewModel.saveCounter(it)
+            viewModel.calcTodayCount(it)
         })
         stepCounterSensor.accuracy.observe(this, Observer {
             viewModel.updateAccuracy(it)

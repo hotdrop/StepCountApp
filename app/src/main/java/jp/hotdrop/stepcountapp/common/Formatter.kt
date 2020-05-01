@@ -14,6 +14,14 @@ object Formatter {
 fun Long.milliToZonedDateTime(): ZonedDateTime =
     ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
 
+fun <T> Iterable<T>.sumByLong(selector: (T) -> Long): Long {
+    var sum: Long = 0
+    for (element in this) {
+        sum += selector(element)
+    }
+    return sum
+}
+
 fun Long.toFormatWithComma(): String =
     if (this == 0L) {
         "0"

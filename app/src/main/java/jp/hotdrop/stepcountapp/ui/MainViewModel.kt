@@ -7,6 +7,7 @@ import jp.hotdrop.stepcountapp.model.DailyStepCount
 import jp.hotdrop.stepcountapp.model.DeviceDetail
 import jp.hotdrop.stepcountapp.repository.StepCounterRepository
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
@@ -21,9 +22,12 @@ class MainViewModel @Inject constructor(
     private val mutableDeviceDetail = MutableLiveData<DeviceDetail>()
     val deviceDetail: LiveData<DeviceDetail> = mutableDeviceDetail
 
-    fun saveCounter(counter: Long) {
+    fun calcTodayCount(effectiveCount: Long) {
         launch {
-            repository.save(counter)
+            val previousTotalNum = repository.totalCountPreviousDateStepNum()
+            val todayStepCount = effectiveCount - previousTotalNum
+            Timber.d("有効歩数=$effectiveCount 前日までのトータル歩数=$previousTotalNum この差分が今日の歩数になるはず。")
+            repository.save(todayStepCount)
         }
     }
 

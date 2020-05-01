@@ -3,6 +3,7 @@ package jp.hotdrop.stepcountapp
 import android.app.Application
 import android.content.Context
 import androidx.multidex.MultiDex
+import com.facebook.stetho.Stetho
 import com.jakewharton.threetenabp.AndroidThreeTen
 import jp.hotdrop.stepcountapp.di.component.AppComponent
 import jp.hotdrop.stepcountapp.di.component.DaggerAppComponent
@@ -18,6 +19,7 @@ class App : Application(), DaggerComponentProvider {
 
         initTimber()
         initThreeTen()
+        initStetho()
 
         component = DaggerAppComponent.builder()
             .applicationContext(this)
@@ -38,5 +40,11 @@ class App : Application(), DaggerComponentProvider {
 
     private fun initThreeTen() {
         AndroidThreeTen.init(this)
+    }
+
+    private fun initStetho() {
+        if (BuildConfig.DEBUG) {
+            Stetho.initializeWithDefaults(this)
+        }
     }
 }

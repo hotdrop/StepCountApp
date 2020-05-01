@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.map
 import dagger.Reusable
+import jp.hotdrop.stepcountapp.common.sumByLong
 import jp.hotdrop.stepcountapp.model.DeviceDetail
 import jp.hotdrop.stepcountapp.model.DailyStepCount
 import jp.hotdrop.stepcountapp.repository.local.SharedPrefs
@@ -29,7 +30,13 @@ class StepCounterRepository @Inject constructor(
                 )
             }
         }.distinctUntilChanged()
+    }
 
+    suspend fun totalCountPreviousDateStepNum(): Long {
+        val todayKey = DailyStepCountEntity.makeKey(ZonedDateTime.now())
+        return db.selectAll()
+            .filter { it.id != todayKey }
+            .sumByLong { it.stepNum }
     }
 
     suspend fun save(counter: Long) {

@@ -27,9 +27,5 @@ class AppSettingRepository @Inject constructor(
     }
 
     fun getAppStartFirstCounter(): Long = sharedPrefs.appStartDeviceCounter
-    fun saveAppStartFirstCounter(count: Long) {
-        sharedPrefs.appStartDeviceCounter = count
-    }
-
     fun getInitAfterRebootDateTimeEpoch(): Long = sharedPrefs.initStepCounterAfterRebootDateTime
 }
