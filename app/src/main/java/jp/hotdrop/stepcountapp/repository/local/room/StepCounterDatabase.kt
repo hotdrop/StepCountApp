@@ -1,6 +1,5 @@
 package jp.hotdrop.stepcountapp.repository.local.room
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import dagger.Reusable
 import org.threeten.bp.Instant
@@ -11,7 +10,7 @@ import javax.inject.Inject
 class StepCounterDatabase @Inject constructor(
     private val dao: StepCounterDao
 ) {
-    fun select(id: Long): LiveData<DailyStepCountEntity?> {
+    suspend fun select(id: Long): DailyStepCountEntity? {
         return dao.select(id)
     }
 
@@ -28,7 +27,7 @@ class StepCounterDatabase @Inject constructor(
 interface StepCounterDao {
 
     @Query("SELECT * FROM ${DailyStepCountEntity.TABLE_NAME} WHERE id == :id")
-    fun select(id: Long): LiveData<DailyStepCountEntity?>
+    suspend fun select(id: Long): DailyStepCountEntity?
 
     @Query("SELECT * FROM ${DailyStepCountEntity.TABLE_NAME}")
     suspend fun selectAll(): List<DailyStepCountEntity>
@@ -41,7 +40,7 @@ interface StepCounterDao {
 data class DailyStepCountEntity(
     @PrimaryKey val id: Long,
     val stepNum: Long,
-    val dayAt: Instant
+    val dayInstant: Instant
 ) {
     companion object {
         const val TABLE_NAME = "step_counter"

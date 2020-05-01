@@ -1,16 +1,13 @@
 package jp.hotdrop.stepcountapp.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.distinctUntilChanged
-import androidx.lifecycle.map
 import dagger.Reusable
 import jp.hotdrop.stepcountapp.common.sumByLong
+import jp.hotdrop.stepcountapp.common.toZonedDateTime
 import jp.hotdrop.stepcountapp.model.DeviceDetail
 import jp.hotdrop.stepcountapp.model.DailyStepCount
 import jp.hotdrop.stepcountapp.repository.local.SharedPrefs
 import jp.hotdrop.stepcountapp.repository.local.room.StepCounterDatabase
 import jp.hotdrop.stepcountapp.repository.local.room.DailyStepCountEntity
-import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
@@ -19,17 +16,14 @@ class StepCounterRepository @Inject constructor(
     private val db: StepCounterDatabase,
     private val sharedPrefs: SharedPrefs
 ) {
-    fun todayCountLiveData(): LiveData<DailyStepCount?> {
-        val todayKey = DailyStepCountEntity.makeKey(ZonedDateTime.now())
-        return db.select(todayKey).map {
-            it?.let {
-                DailyStepCount(
-                    id = it.id,
-                    stepNum = it.stepNum,
-                    dayAt = ZonedDateTime.ofInstant(it.dayAt, ZoneId.systemDefault())
-                )
-            }
-        }.distinctUntilChanged()
+    suspend fun find(targetAt: ZonedDateTime): DailyStepCount? {
+        val key = DailyStepCountEntity.makeKey(targetAt)
+        return db.select(key)?.let {
+            DailyStepCount(
+                stepNum = it.stepNum,
+                dayAt = it.dayInstant.toZonedDateTime()
+            )
+        }
     }
 
     suspend fun totalCountPreviousDateStepNum(): Long {
@@ -40,6 +34,7 @@ class StepCounterRepository @Inject constructor(
     }
 
     suspend fun save(counter: Long) {
+        // 保存は当日しか絶対しないのでcreateのなかでキーも作って保存する
         val entity = DailyStepCountEntity.create(stepNum = counter)
         db.save(entity)
     }

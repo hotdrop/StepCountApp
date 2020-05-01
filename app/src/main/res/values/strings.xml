@@ -4,7 +4,8 @@
     <string name="title_google_fit">GoogleFit</string>
     <string name="title_dashboard">Dashboard</string>
 
-    <string name="device_screen_title">今日の歩数</string>
+    <string name="device_screen_overview_today">今日の歩数</string>
+    <string name="device_screen_overview_past">この日の歩数</string>
     <string name="device_screen_step_count_loading">取得中</string>
     <string name="device_screen_sensor_label">センサー感度:</string>
     <string name="device_screen_step_count_in_os_label">OS内で保持している歩数:</string>

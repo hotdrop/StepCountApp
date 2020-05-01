@@ -13,9 +13,11 @@ import jp.hotdrop.stepcountapp.common.toFormatWithComma
 import jp.hotdrop.stepcountapp.di.ViewModelFactory
 import jp.hotdrop.stepcountapp.di.component.component
 import jp.hotdrop.stepcountapp.model.Accuracy
+import jp.hotdrop.stepcountapp.model.DailyStepCount
 import jp.hotdrop.stepcountapp.model.DeviceDetail
 import jp.hotdrop.stepcountapp.ui.MainViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
+import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
 class HomeFragment: Fragment() {
@@ -36,11 +38,8 @@ class HomeFragment: Fragment() {
     }
 
     private fun observe() {
-        viewModel.todayStepCounter.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                step_counter.text = it.stepNum.toFormatWithComma()
-                now_date.text = it.dayAt.format(Formatter.ofDate)
-            }
+        viewModel.dailyStepCounter.observe(viewLifecycleOwner, Observer {
+            initStepCountView(it)
         })
         viewModel.accuracy.observe(viewLifecycleOwner, Observer {
             initAccuracy(it)
@@ -50,7 +49,28 @@ class HomeFragment: Fragment() {
         })
     }
 
+    private fun initStepCountView(dailyStepCount: DailyStepCount) {
+        // TODO ここPagerViewとかで変えたい
+        show_date.text = dailyStepCount.dayAt.format(Formatter.ofDate)
+
+        // 日付の下の概要
+        if (isSelectToday(dailyStepCount.dayAt)) {
+            overview.text = getString(R.string.device_screen_overview_today)
+        } else {
+            overview.text = getString(R.string.device_screen_overview_past)
+        }
+
+        // 歩数
+        step_counter.text = dailyStepCount.stepNum.toFormatWithComma()
+    }
+
+    private fun isSelectToday(targetAt: ZonedDateTime): Boolean {
+        val now = ZonedDateTime.now()
+        return now.year == targetAt.year && now.monthValue == targetAt.monthValue && now.dayOfMonth == targetAt.dayOfMonth
+    }
+
     private fun initAccuracy(accuracy: Accuracy) {
+        // TODO 表示色変えたい
         val messageResId = when (accuracy) {
             Accuracy.High -> R.string.accuracy_high_message
             Accuracy.Medium -> R.string.accuracy_medium_message

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "48b88e67275bba00d786eda6d2623a36",
+    "identityHash": "999df3f03172e647cc2dd2910ff20e1f",
     "entities": [
       {
         "tableName": "step_counter",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `stepNum` INTEGER NOT NULL, `dayAt` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `stepNum` INTEGER NOT NULL, `dayInstant` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -21,8 +21,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "dayAt",
-            "columnName": "dayAt",
+            "fieldPath": "dayInstant",
+            "columnName": "dayInstant",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -40,7 +40,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '48b88e67275bba00d786eda6d2623a36')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '999df3f03172e647cc2dd2910ff20e1f')"
     ]
   }
 }

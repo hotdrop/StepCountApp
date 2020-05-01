@@ -8,7 +8,7 @@
     tools:context=".ui.home.HomeFragment">
 
     <TextView
-        android:id="@+id/now_date"
+        android:id="@+id/show_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -19,15 +19,15 @@
         tools:text="2020年4月30日" />
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/overview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="@string/device_screen_title"
+        android:text="@string/device_screen_overview_today"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/now_date" />
+        app:layout_constraintTop_toBottomOf="@+id/show_date" />
 
     <TextView
         android:id="@+id/step_counter"
@@ -38,7 +38,7 @@
         android:text="@string/device_screen_step_count_loading"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintTop_toBottomOf="@+id/overview"
         tools:text="6,544" />
 
     <androidx.cardview.widget.CardView
