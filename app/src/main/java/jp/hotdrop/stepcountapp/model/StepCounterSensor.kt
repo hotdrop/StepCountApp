@@ -12,7 +12,6 @@ import androidx.lifecycle.MutableLiveData
 import dagger.Reusable
 import jp.hotdrop.stepcountapp.common.milliToZonedDateTime
 import jp.hotdrop.stepcountapp.repository.AppSettingRepository
-import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -93,23 +92,23 @@ class StepCounterSensor @Inject constructor(
      * 有効なアプリ内歩数を取得する
      */
     private fun calcStepCounter(stepCounter: Long): Long {
-        val firstCounter = repository.getAppStartFirstCounter()
+        var firstCounter = repository.getAppStartFirstCounter()
         if (firstCounter == 0L) {
             Timber.d("アプリの初回時かリセット後に1度のみ実行: カウンターを初期化")
-            init(stepCounter)
+            repository.initAppStartFirstTime(stepCounter, rebootDateTimeEpoch)
+            firstCounter = stepCounter
         }
 
-        // 端末リブート後は歩数カウントの計算方法を変えるので、リブート後1度だけ実行する
-        if (isRebootFirstTime()) {
-            Timber.d("端末リブート後、初回のみ実行: 最後に保存した歩数を保存")
+        // 端末リブートの初回1度だけ計算方法を変える必要があるので分岐している
+        if (isRebootAtFirstTime()) {
             val lastCurrentStepCounter = repository.getStepCounter()
-            Timber.d("  最終歩数=$lastCurrentStepCounter")
-            repository.saveAppStartFirstCounter(lastCurrentStepCounter)
-            repository.saveInitAfterRebootDateTimeEpoch()
+            Timber.d("端末リブート後、初回のみ実行: 最後に保存した歩数($lastCurrentStepCounter)を保存")
+            repository.updateInfoAfterReboot(lastCurrentStepCounter, rebootDateTimeEpoch)
+
         }
 
         Timber.d("歩数計算 OS歩数=$stepCounter アプリ起動時歩数=$firstCounter")
-        val currentCounter = if (isReboot()) {
+        val currentCounter = if (repository.isReboot) {
             // センサー歩数 + アプリ起動時の歩数
             Timber.d("アプリを起動して歩数カウントを始めた後、端末リブートを1回以上している=歩数を加算")
             stepCounter + firstCounter
@@ -126,20 +125,13 @@ class StepCounterSensor @Inject constructor(
         return currentCounter
     }
 
-    private fun init(stepCount: Long) {
-        repository.saveAppStartFirstCounter(stepCount)
-        repository.saveAppStartStepCounterDateTimeEpoch()
-    }
+    private fun isRebootAtFirstTime(): Boolean {
+        val previousRebootDate = repository.getInitAfterRebootDateTimeEpoch().milliToZonedDateTime()
+        val rebootDate = rebootDateTimeEpoch.milliToZonedDateTime()
 
-    private fun isRebootFirstTime(): Boolean {
-        val previousRebootEpoch = repository.getInitAfterRebootDateTimeEpoch()
-        Timber.d("リブート日は${rebootDateTimeEpoch.milliToZonedDateTime()} 前回ブート日は${previousRebootEpoch.milliToZonedDateTime()}")
-        return (rebootDateTimeEpoch - previousRebootEpoch) > 0
-    }
+        Timber.d("リブート日は$rebootDate 前回ブート日は$previousRebootDate")
 
-    private fun isReboot(): Boolean {
-        val firstCountDateTimeEpoch = repository.getAppStartStepCounterDateTimeEpoch()
-        return firstCountDateTimeEpoch != 0L && (rebootDateTimeEpoch - firstCountDateTimeEpoch) > 0
+        return rebootDate.isAfter(previousRebootDate)
     }
 
     companion object {

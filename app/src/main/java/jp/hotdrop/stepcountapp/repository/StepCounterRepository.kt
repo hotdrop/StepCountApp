@@ -39,8 +39,7 @@ class StepCounterRepository @Inject constructor(
 
     fun getDeviceDetail(counterFromOS: Long): DeviceDetail {
         return DeviceDetail(
-            appStartFirstCounter = sharedPrefs.appStartFirstCounter,
-            appStartStepCounterDateTimeEpoch = sharedPrefs.startStepCounterDateTime,
+            appStartFirstCounter = sharedPrefs.appStartDeviceCounter,
             initAfterRebootDateTimeEpoch = sharedPrefs.initStepCounterAfterRebootDateTime,
             stepCounterFromOS = counterFromOS
         )

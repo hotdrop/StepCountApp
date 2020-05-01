@@ -9,7 +9,7 @@
     <string name="device_screen_sensor_label">センサー感度:</string>
     <string name="device_screen_step_count_in_os_label">OS内で保持している歩数:</string>
     <string name="device_screen_step_count_by_reboot_label">再起動時の初期歩数:</string>
-    <string name="device_screen_os_reboot_date">前回端末再起動:</string>
+    <string name="device_screen_os_reboot_date">前回の端末再起動日:</string>
     <string name="device_screen_os_reboot_non_date">-</string>
 
     <string name="available_not_sensor_device">端末センサーは利用できません</string>

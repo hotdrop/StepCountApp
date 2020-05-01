@@ -13,29 +13,30 @@ class SharedPrefs @Inject constructor(
     private val editor = prefs.edit()
 
     /**
-     * アプリで歩数をカウントし出した際、OSから取得した歩数を保持する。
+     * アプリで歩数をカウントし出した時にOSから取得した歩数を保持する。
      * リブートするまではこの値を現在歩数からマイナスした値が、アプリで利用したい歩数となる。
-     * アプリ起動後（端末再起動後のアプリ初回起動も含む）、またはリセット後に一度しか実行しないことを保証しないといけない。
+     * アプリ起動後（端末再起動後のアプリ初回起動も含む）、またはリセット後に一度しか書き換えないことを保証しないといけない。
      */
-    private val appStartFirstCounterKey = "key1"
-    var appStartFirstCounter: Long
-        get() = getLong(appStartFirstCounterKey)
-        set(value) = putLong(appStartFirstCounterKey, value)
+    private val appStartDeviceCounterKey = "key1"
+    var appStartDeviceCounter: Long
+        get() = getLong(appStartDeviceCounterKey)
+        set(value) = putLong(appStartDeviceCounterKey, value)
 
     /**
      * appStartFirstCounterを取得した時刻
      * appStartFirstCounterはアプリ初回起動後、またはリセット後に一度しか実行しないようにしたいと上で書いた。
      * その一度実行を保証するため時刻を持っておく。こちらはアプリ初回起動時のみで端末が再起動されても更新しない
      */
-    private val startStepCounterDatetimeKey = "key2"
-    var startStepCounterDateTime: Long
-        get() = getLong(startStepCounterDatetimeKey)
-        set(value) = putLong(startStepCounterDatetimeKey, value)
+    private val isRebootKey = "key2"
+    var isReboot: Boolean
+        get() = getBoolean(isRebootKey)
+        set(value) = putBoolean(isRebootKey, value)
 
     /**
      * リブート後の歩数カウンタ初回処理の時刻
-     * リブート後は歩数カウンタの計算方法を変える必要があるので1度だけ通る処理を実行したい
+     * リブート後は歩数カウンタの計算方法を変える必要があるので1度だけ通る処理を実行したい。
      * これはリブートのたびに最初の1回行いたいのでフラグだとダメ。時刻にした。
+     * また、アプリ初回起動時に前回リブート時刻を入れる
      */
     private val initStepCounterAfterRebootDatetimeKey = "key3"
     var initStepCounterAfterRebootDateTime: Long
@@ -55,5 +56,13 @@ class SharedPrefs @Inject constructor(
 
     private fun putLong(key: String, value: Long) {
         editor.putLong(key, value).commit()
+        editor.commit()
+    }
+
+    private fun getBoolean(key: String) = prefs.getBoolean(key, false)
+
+    private fun putBoolean(key: String, value: Boolean) {
+        editor.putBoolean(key, value)
+        editor.commit()
     }
 }

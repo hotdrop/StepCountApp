@@ -6,23 +6,30 @@ import javax.inject.Inject
 class AppSettingRepository @Inject constructor(
     private val sharedPrefs: SharedPrefs
 ) {
+
+    val isReboot: Boolean = sharedPrefs.isReboot
+
+    fun initAppStartFirstTime(firstStepCount: Long, previousRebootEpoch: Long) {
+        sharedPrefs.appStartDeviceCounter = firstStepCount
+        sharedPrefs.isReboot = false
+        sharedPrefs.initStepCounterAfterRebootDateTime = previousRebootEpoch
+    }
+
+    fun updateInfoAfterReboot(lastCurrentStepCounter: Long, rebootEpoch: Long) {
+        sharedPrefs.appStartDeviceCounter = lastCurrentStepCounter
+        sharedPrefs.isReboot = true
+        sharedPrefs.initStepCounterAfterRebootDateTime = rebootEpoch
+    }
+
     fun getStepCounter(): Long = sharedPrefs.stepCounterSensor
     fun saveStepCounter(count: Long) {
         sharedPrefs.stepCounterSensor = count
     }
 
-    fun getAppStartFirstCounter(): Long = sharedPrefs.appStartFirstCounter
+    fun getAppStartFirstCounter(): Long = sharedPrefs.appStartDeviceCounter
     fun saveAppStartFirstCounter(count: Long) {
-        sharedPrefs.appStartFirstCounter = count
-    }
-
-    fun getAppStartStepCounterDateTimeEpoch(): Long = sharedPrefs.startStepCounterDateTime
-    fun saveAppStartStepCounterDateTimeEpoch() {
-        sharedPrefs.startStepCounterDateTime = System.currentTimeMillis()
+        sharedPrefs.appStartDeviceCounter = count
     }
 
     fun getInitAfterRebootDateTimeEpoch(): Long = sharedPrefs.initStepCounterAfterRebootDateTime
-    fun saveInitAfterRebootDateTimeEpoch() {
-        sharedPrefs.initStepCounterAfterRebootDateTime = System.currentTimeMillis()
-    }
 }
