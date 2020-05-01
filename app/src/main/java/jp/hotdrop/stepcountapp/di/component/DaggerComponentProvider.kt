@@ -7,5 +7,8 @@ interface DaggerComponentProvider {
     val component: AppComponent
 }
 
-val Activity.component get() = (application as DaggerComponentProvider).component.plus()
-val Fragment.component get() = activity?.component?.plus()
+val Activity.component
+    get() = (application as DaggerComponentProvider).component.plus()
+
+val Fragment.component
+    get() = activity?.component?.plus()

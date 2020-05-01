@@ -3,4 +3,40 @@
     <string name="title_home">Home</string>
     <string name="title_google_fit">GoogleFit</string>
     <string name="title_dashboard">Dashboard</string>
+
+    <string name="device_screen_title">今日の歩数</string>
+    <string name="device_screen_step_count_loading">取得中</string>
+    <string name="device_screen_sensor_label">センサー感度:</string>
+    <string name="device_screen_step_count_in_os_label">OS内で保持している歩数:</string>
+    <string name="device_screen_step_count_by_reboot_label">再起動時の初期歩数:</string>
+    <string name="device_screen_os_reboot_date">前回端末再起動:</string>
+    <string name="device_screen_os_reboot_non_date">-</string>
+
+    <string name="available_not_sensor_device">端末センサーは利用できません</string>
+    <string name="available_not_step_counter_sensor">端末の歩行センサーは利用できません</string>
+
+    <string name="accuracy_default">-</string>
+    <string name="accuracy_high_message">高精度</string>
+    <string name="accuracy_medium_message">普通の精度</string>
+    <string name="accuracy_low_message">低い精度</string>
+    <string name="accuracy_unreliable_message">非常に低精度</string>
+    <string name="accuracy_no_contact_message">利用不可</string>
+
+    <string name="step_counter_reset_message">
+        「アプリ保持歩数」をリセットしますか？
+        \n（AndroidOS側で持っている歩数はリセットされません。）
+    </string>
+
+    <string name="permission_show_rationale_message">
+        このアプリは歩数をカウントします。
+        \nそのため、端末に搭載された身体活動センサーの使用許可が必要になります。
+        \n
+        \n次の画面で許可するか拒否するか選択してください。
+    </string>
+
+    <string name="permission_never_ask_again_message">
+        歩数をカウントするためスマホ端末の身体活動機能を使う権限を許可ください。「端末のアプリ設定画面」で許可設定ができます。
+    </string>
+
+    <string name="dialog_to_settings_button">端末のアプリ設定画面</string>
 </resources>

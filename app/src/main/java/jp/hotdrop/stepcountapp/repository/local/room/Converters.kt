@@ -1,4 +1,4 @@
-package jp.hotdrop.stepcountapp.repository.room
+package jp.hotdrop.stepcountapp.repository.local.room
 
 import androidx.room.TypeConverter
 import org.threeten.bp.Instant

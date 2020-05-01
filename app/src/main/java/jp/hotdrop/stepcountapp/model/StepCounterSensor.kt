@@ -1,0 +1,148 @@
+package jp.hotdrop.stepcountapp.model
+
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import android.os.SystemClock
+import androidx.core.content.getSystemService
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import dagger.Reusable
+import jp.hotdrop.stepcountapp.common.milliToZonedDateTime
+import jp.hotdrop.stepcountapp.repository.AppSettingRepository
+import org.threeten.bp.ZonedDateTime
+import timber.log.Timber
+import javax.inject.Inject
+
+@Reusable
+class StepCounterSensor @Inject constructor(
+    context: Context,
+    private val repository: AppSettingRepository
+) {
+    private val mutableAccuracy = MutableLiveData<Accuracy>()
+    val accuracy: LiveData<Accuracy> = mutableAccuracy
+
+    private val mutableCounter = MutableLiveData<Long>()
+    val counter: LiveData<Long> = mutableCounter
+
+    private val mutableCounterFromOS = MutableLiveData<Long>()
+    val counterFromOS: LiveData<Long> = mutableCounterFromOS
+
+    private val sensorManager: SensorManager? = context.getSystemService()
+    private val sensor: Sensor? = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+    private val rebootDateTimeEpoch: Long = System.currentTimeMillis() - SystemClock.elapsedRealtime()
+
+    /**
+     * 端末が保持する歩数値を取得するリスナー
+     */
+    private val stepCountEventListener = object : SensorEventListener {
+        override fun onSensorChanged(event: SensorEvent?) {
+            event?.values?.get(0)?.toLong()?.let { stepCounter ->
+                val calcCounter = calcStepCounter(stepCounter)
+                mutableCounter.postValue(calcCounter)
+            }
+        }
+        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+            when (accuracy) {
+                SensorManager.SENSOR_STATUS_ACCURACY_HIGH -> mutableAccuracy.postValue(Accuracy.High)
+                SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM -> mutableAccuracy.postValue(Accuracy.Medium)
+                SensorManager.SENSOR_STATUS_ACCURACY_LOW -> mutableAccuracy.postValue(Accuracy.Low)
+                SensorManager.SENSOR_STATUS_UNRELIABLE -> mutableAccuracy.postValue(Accuracy.Unreliable)
+                else -> mutableAccuracy.postValue(Accuracy.NoContact)
+            }
+        }
+    }
+
+    fun registerListener(): Boolean {
+        if (!isAvailable()) {
+            Timber.d("歩行センサーのregisterListenerの結果がfalseでした。")
+            return false
+        }
+
+        // TODO これいらなくないか？
+//        mutableCounter.postValue(repository.getStepCounter())
+//        mutableCounterFromLocal.postValue(repository.getAppStartFirstCounter())
+
+        Timber.d("リスナーを登録します")
+        return sensorManager?.registerListener(stepCountEventListener,
+            sensor,
+            SensorManager.SENSOR_DELAY_NORMAL,
+            1_000_000) ?: false
+    }
+
+    fun unregisterListener() {
+        Timber.d("リスナーを解除します")
+        sensorManager?.unregisterListener(stepCountEventListener)
+    }
+
+    private fun isAvailable(): Boolean {
+        return availableStatus() == SensorStatus.OK
+    }
+
+    private fun availableStatus(): SensorStatus {
+        return when {
+            sensorManager == null -> SensorStatus.NOT_SENSOR_MANAGER
+            sensor == null -> SensorStatus.NOT_SENSOR_TYPE_ON_DEVICES
+            else -> SensorStatus.OK
+        }
+    }
+
+    /**
+     * 有効なアプリ内歩数を取得する
+     */
+    private fun calcStepCounter(stepCounter: Long): Long {
+        val firstCounter = repository.getAppStartFirstCounter()
+        if (firstCounter == 0L) {
+            Timber.d("アプリの初回時かリセット後に1度のみ実行: カウンターを初期化")
+            init(stepCounter)
+        }
+
+        // 端末リブート後は歩数カウントの計算方法を変えるので、リブート後1度だけ実行する
+        if (isRebootFirstTime()) {
+            Timber.d("端末リブート後、初回のみ実行: 最後に保存した歩数を保存")
+            val lastCurrentStepCounter = repository.getStepCounter()
+            Timber.d("  最終歩数=$lastCurrentStepCounter")
+            repository.saveAppStartFirstCounter(lastCurrentStepCounter)
+            repository.saveInitAfterRebootDateTimeEpoch()
+        }
+
+        Timber.d("歩数計算 OS歩数=$stepCounter アプリ起動時歩数=$firstCounter")
+        val currentCounter = if (isReboot()) {
+            // センサー歩数 + アプリ起動時の歩数
+            Timber.d("アプリを起動して歩数カウントを始めた後、端末リブートを1回以上している=歩数を加算")
+            stepCounter + firstCounter
+        } else {
+            // センサー歩数 - 最初の歩数
+            Timber.d("アプリを起動してから一度も端末リブートしていない=差し引きで計算")
+            stepCounter - firstCounter
+        }
+        Timber.d("歩数計算結果=$currentCounter")
+
+        repository.saveStepCounter(currentCounter)
+        mutableCounterFromOS.postValue(stepCounter)
+
+        return currentCounter
+    }
+
+    private fun init(stepCount: Long) {
+        repository.saveAppStartFirstCounter(stepCount)
+        repository.saveAppStartStepCounterDateTimeEpoch()
+    }
+
+    private fun isRebootFirstTime(): Boolean {
+        val previousRebootEpoch = repository.getInitAfterRebootDateTimeEpoch()
+        Timber.d("リブート日は${rebootDateTimeEpoch.milliToZonedDateTime()} 前回ブート日は${previousRebootEpoch.milliToZonedDateTime()}")
+        return (rebootDateTimeEpoch - previousRebootEpoch) > 0
+    }
+
+    private fun isReboot(): Boolean {
+        val firstCountDateTimeEpoch = repository.getAppStartStepCounterDateTimeEpoch()
+        return firstCountDateTimeEpoch != 0L && (rebootDateTimeEpoch - firstCountDateTimeEpoch) > 0
+    }
+
+    companion object {
+        enum class SensorStatus { OK, NOT_SENSOR_MANAGER, NOT_SENSOR_TYPE_ON_DEVICES }
+    }
+}

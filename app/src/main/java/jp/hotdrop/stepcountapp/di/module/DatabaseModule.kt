@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
-import jp.hotdrop.stepcountapp.repository.room.AppDatabase
-import jp.hotdrop.stepcountapp.repository.room.DeviceStepCounterDao
+import jp.hotdrop.stepcountapp.repository.local.room.AppDatabase
+import jp.hotdrop.stepcountapp.repository.local.room.StepCounterDao
 import javax.inject.Singleton
 
 @Module
@@ -23,5 +23,5 @@ object DatabaseModule {
     @JvmStatic
     @Provides
     @Singleton
-    fun provideDeviceStepCounterDao(db: AppDatabase): DeviceStepCounterDao = db.deviceStepCounterDao()
+    fun provideDeviceStepCounterDao(db: AppDatabase): StepCounterDao = db.deviceStepCounterDao()
 }
