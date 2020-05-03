@@ -90,7 +90,7 @@ class StepCounterSensor @Inject constructor(
     private fun calcEffectiveStepCount(stepCounter: Long): Long {
         var firstCounter = repository.getAppStartFirstCounter()
         if (firstCounter == 0L) {
-            Timber.d("アプリの初回時かリセット後に1度のみ実行: カウンターを初期化")
+            Timber.d("アプリの初回起動時に1度のみ実行: カウンターを初期化")
             repository.initAppStartFirstTime(stepCounter, rebootDateTimeEpoch)
             firstCounter = stepCounter
         }
@@ -100,7 +100,6 @@ class StepCounterSensor @Inject constructor(
             val lastCurrentStepCounter = repository.getStepCounter()
             Timber.d("端末リブート後、初回のみ実行: 最後に保存した歩数($lastCurrentStepCounter)を保存")
             repository.updateInfoAfterReboot(lastCurrentStepCounter, rebootDateTimeEpoch)
-
         }
 
         Timber.d("歩数計算 OS歩数=$stepCounter アプリ起動時歩数=$firstCounter")
@@ -122,12 +121,9 @@ class StepCounterSensor @Inject constructor(
     }
 
     private fun isRebootAtFirstTime(): Boolean {
-        val previousRebootDate = repository.getInitAfterRebootDateTimeEpoch().milliToZonedDateTime()
-        val rebootDate = rebootDateTimeEpoch.milliToZonedDateTime()
-
-        Timber.d("リブート日は$rebootDate 前回ブート日は$previousRebootDate")
-
-        return rebootDate.isAfter(previousRebootDate)
+        val previousRebootEpoch = repository.getInitAfterRebootDateTimeEpoch()
+        Timber.d("リブート日は${rebootDateTimeEpoch.milliToZonedDateTime()} 前回ブート日は${previousRebootEpoch.milliToZonedDateTime()}")
+        return rebootDateTimeEpoch > previousRebootEpoch
     }
 
     companion object {
