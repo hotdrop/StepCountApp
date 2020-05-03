@@ -153,7 +153,6 @@ class HomeFragment: Fragment() {
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
             val currentDate = currentAt.plusDays(viewPagerDayList[position])
             val view = LayoutInflater.from(container.context).inflate(R.layout.row_date, container, false)
-
             view.show_date.text = currentDate.format(Formatter.ofDate)
             when (position) {
                 0 -> {
@@ -168,6 +167,9 @@ class HomeFragment: Fragment() {
                     view.arrow_next.isVisible = true
                     view.arrow_prev.isVisible = true
                 }
+            }
+            view.row_date_layout.setOnClickListener {
+                // TODO カレンダーを表示する
             }
 
             container.addView(view)

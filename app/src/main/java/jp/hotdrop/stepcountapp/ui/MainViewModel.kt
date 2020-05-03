@@ -30,6 +30,7 @@ class MainViewModel @Inject constructor(
             val todayStepCount = effectiveCount - previousTotalNum
             Timber.d("有効歩数=$effectiveCount 前日までのトータル歩数=$previousTotalNum この差分が今日の歩数になるはず。")
             repository.save(todayStepCount)
+            // TODO この処理は選択日が今日になっていなければスルーしたい。ViewModelに現在表示している日付を持つか
             findStepCount(ZonedDateTime.now())
         }
     }
