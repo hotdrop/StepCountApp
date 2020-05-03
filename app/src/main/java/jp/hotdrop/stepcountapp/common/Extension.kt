@@ -11,6 +11,12 @@ fun Long.milliToZonedDateTime(): ZonedDateTime =
 fun Instant.toZonedDateTime(): ZonedDateTime =
     ZonedDateTime.ofInstant(this, ZoneId.systemDefault())
 
+fun ZonedDateTime.toLongYearMonthDay(): Long {
+    val monthStr = this.month.value.toString().padStart(2, '0')
+    val dayStr = this.dayOfMonth.toString().padStart(2, '0')
+    return "${this.year}${monthStr}${dayStr}".toLong()
+}
+
 fun <T> Iterable<T>.sumByLong(selector: (T) -> Long): Long {
     var sum: Long = 0
     for (element in this) {

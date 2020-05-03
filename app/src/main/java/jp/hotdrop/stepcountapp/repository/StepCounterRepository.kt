@@ -2,6 +2,7 @@ package jp.hotdrop.stepcountapp.repository
 
 import dagger.Reusable
 import jp.hotdrop.stepcountapp.common.sumByLong
+import jp.hotdrop.stepcountapp.common.toLongYearMonthDay
 import jp.hotdrop.stepcountapp.common.toZonedDateTime
 import jp.hotdrop.stepcountapp.model.DeviceDetail
 import jp.hotdrop.stepcountapp.model.DailyStepCount
@@ -17,7 +18,7 @@ class StepCounterRepository @Inject constructor(
     private val sharedPrefs: SharedPrefs
 ) {
     suspend fun find(targetAt: ZonedDateTime): DailyStepCount? {
-        val key = DailyStepCountEntity.makeKey(targetAt)
+        val key = targetAt.toLongYearMonthDay()
         return db.select(key)?.let {
             DailyStepCount(
                 stepNum = it.stepNum,
@@ -27,7 +28,7 @@ class StepCounterRepository @Inject constructor(
     }
 
     suspend fun totalCountPreviousDateStepNum(): Long {
-        val todayKey = DailyStepCountEntity.makeKey(ZonedDateTime.now())
+        val todayKey = ZonedDateTime.now().toLongYearMonthDay()
         return db.selectAll()
             .filter { it.id != todayKey }
             .sumByLong { it.stepNum }

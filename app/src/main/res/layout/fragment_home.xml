@@ -7,16 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <TextView
-        android:id="@+id/show_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textSize="24sp"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/date_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/row_date_height"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="2020年4月30日" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/overview"
@@ -27,7 +24,7 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/show_date" />
+        app:layout_constraintTop_toBottomOf="@+id/date_view_pager" />
 
     <TextView
         android:id="@+id/step_counter"

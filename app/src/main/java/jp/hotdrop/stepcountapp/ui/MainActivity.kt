@@ -41,18 +41,8 @@ class MainActivity: AppCompatActivity() {
         observe()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            initStepSensorViewWithPermissionCheck()
-        } else {
-            initStepSensorView()
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         stepCounterSensor.unregisterListener()
     }
 
@@ -66,6 +56,12 @@ class MainActivity: AppCompatActivity() {
         ))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            initStepSensorViewWithPermissionCheck()
+        } else {
+            initStepSensorView()
+        }
     }
 
     private fun observe() {

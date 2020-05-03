@@ -30,11 +30,11 @@ class MainViewModel @Inject constructor(
             val todayStepCount = effectiveCount - previousTotalNum
             Timber.d("有効歩数=$effectiveCount 前日までのトータル歩数=$previousTotalNum この差分が今日の歩数になるはず。")
             repository.save(todayStepCount)
-            updateDailyStepCount(ZonedDateTime.now())
+            findStepCount(ZonedDateTime.now())
         }
     }
 
-    fun updateDailyStepCount(targetAt: ZonedDateTime) {
+    fun findStepCount(targetAt: ZonedDateTime) {
         launch {
             // 歩数がない日も画面表示したいのでカウント0としてLiveDataに投げる。
             val dailyStepCount = repository.find(targetAt) ?: DailyStepCount(stepNum = 0, dayAt = targetAt)

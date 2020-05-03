@@ -2,6 +2,7 @@ package jp.hotdrop.stepcountapp.repository.local.room
 
 import androidx.room.*
 import dagger.Reusable
+import jp.hotdrop.stepcountapp.common.toLongYearMonthDay
 import org.threeten.bp.Instant
 import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
@@ -46,14 +47,8 @@ data class DailyStepCountEntity(
         const val TABLE_NAME = "step_counter"
         fun create(id: Long? = null, stepNum: Long): DailyStepCountEntity {
             val now = ZonedDateTime.now()
-            val key = id ?: makeKey(now)
+            val key = id ?: now.toLongYearMonthDay()
             return DailyStepCountEntity(key, stepNum, now.toInstant())
-        }
-
-        fun makeKey(now: ZonedDateTime): Long {
-            val monthStr = now.month.value.toString().padStart(2, '0')
-            val dayStr = now.dayOfMonth.toString().padStart(2, '0')
-            return "${now.year}${monthStr}${dayStr}".toLong()
         }
     }
 }
