@@ -5,7 +5,7 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import java.util.*
 
-fun Long.milliToZonedDateTime(): ZonedDateTime =
+fun Long.toZonedDateTime(): ZonedDateTime =
     ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
 
 fun Instant.toZonedDateTime(): ZonedDateTime =
@@ -15,6 +15,10 @@ fun ZonedDateTime.toLongYearMonthDay(): Long {
     val monthStr = this.month.value.toString().padStart(2, '0')
     val dayStr = this.dayOfMonth.toString().padStart(2, '0')
     return "${this.year}${monthStr}${dayStr}".toLong()
+}
+
+fun ZonedDateTime.toStartDayEpochSecond(): Long {
+    return ZonedDateTime.of(this.year, this.monthValue, this.dayOfMonth, 0, 0, 0, 0, ZoneId.systemDefault()).toEpochSecond()
 }
 
 fun <T> Iterable<T>.sumByLong(selector: (T) -> Long): Long {

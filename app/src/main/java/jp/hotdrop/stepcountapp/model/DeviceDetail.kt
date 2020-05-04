@@ -1,6 +1,6 @@
 package jp.hotdrop.stepcountapp.model
 
-import jp.hotdrop.stepcountapp.common.milliToZonedDateTime
+import jp.hotdrop.stepcountapp.common.toZonedDateTime
 import org.threeten.bp.ZonedDateTime
 
 data class DeviceDetail (
@@ -12,7 +12,7 @@ data class DeviceDetail (
         return if (initAfterRebootDateTimeEpoch == 0L) {
             null
         } else {
-            initAfterRebootDateTimeEpoch.milliToZonedDateTime()
+            initAfterRebootDateTimeEpoch.toZonedDateTime()
         }
     }
 }

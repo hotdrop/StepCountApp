@@ -75,6 +75,10 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.0'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.0'
 
+    // Google Fit
+    implementation 'com.google.android.gms:play-services-fitness:18.0.0'
+    implementation 'com.google.android.gms:play-services-auth:18.0.0'
+
     debugImplementation 'com.facebook.stetho:stetho:1.5.0'
 
     testImplementation 'junit:junit:4.12'

@@ -40,4 +40,12 @@
     </string>
 
     <string name="dialog_to_settings_button">端末のアプリ設定画面</string>
+
+    <string name="google_fit_screen_auth_label">Google Fitとの連携:</string>
+    <string name="google_fit_screen_step_count_loading">ー</string>
+    <string name="google_fit_screen_auth_enable_status">有効</string>
+    <string name="google_fit_screen_auth_disable_status">無効</string>
+    <string name="google_fit_screen_enable_button">Fit連携を有効にする</string>
+    <string name="google_fit_screen_disable_button">Fit連携を無効にする</string>
+
 </resources>

@@ -1,4 +1,4 @@
-package jp.hotdrop.stepcountapp.model
+package jp.hotdrop.stepcountapp.services
 
 import android.content.Context
 import android.hardware.Sensor
@@ -10,7 +10,8 @@ import androidx.core.content.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import dagger.Reusable
-import jp.hotdrop.stepcountapp.common.milliToZonedDateTime
+import jp.hotdrop.stepcountapp.common.toZonedDateTime
+import jp.hotdrop.stepcountapp.model.Accuracy
 import jp.hotdrop.stepcountapp.repository.AppSettingRepository
 import timber.log.Timber
 import javax.inject.Inject
@@ -122,7 +123,7 @@ class StepCounterSensor @Inject constructor(
 
     private fun isRebootAtFirstTime(): Boolean {
         val previousRebootEpoch = repository.getInitAfterRebootDateTimeEpoch()
-        Timber.d("リブート日は${rebootDateTimeEpoch.milliToZonedDateTime()} 前回ブート日は${previousRebootEpoch.milliToZonedDateTime()}")
+        Timber.d("リブート日は${rebootDateTimeEpoch.toZonedDateTime()} 前回ブート日は${previousRebootEpoch.toZonedDateTime()}")
         return rebootDateTimeEpoch > previousRebootEpoch
     }
 

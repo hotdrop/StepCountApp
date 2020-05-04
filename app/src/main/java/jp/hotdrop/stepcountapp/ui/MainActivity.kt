@@ -18,7 +18,7 @@ import androidx.navigation.ui.setupWithNavController
 import jp.hotdrop.stepcountapp.R
 import jp.hotdrop.stepcountapp.di.ViewModelFactory
 import jp.hotdrop.stepcountapp.di.component.component
-import jp.hotdrop.stepcountapp.model.StepCounterSensor
+import jp.hotdrop.stepcountapp.services.StepCounterSensor
 import permissions.dispatcher.*
 import javax.inject.Inject
 
