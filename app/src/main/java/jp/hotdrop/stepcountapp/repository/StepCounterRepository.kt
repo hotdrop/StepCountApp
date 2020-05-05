@@ -7,7 +7,6 @@ import jp.hotdrop.stepcountapp.model.DailyStepCount
 import jp.hotdrop.stepcountapp.repository.local.SharedPrefs
 import jp.hotdrop.stepcountapp.repository.local.room.StepCounterDatabase
 import jp.hotdrop.stepcountapp.repository.local.room.DailyStepCountEntity
-import org.threeten.bp.Instant
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import javax.inject.Inject
@@ -52,9 +51,9 @@ class StepCounterRepository @Inject constructor(
             .sumByLong { it.stepNum }
     }
 
-    suspend fun save(counter: Long) {
+    suspend fun save(stepCount: Long) {
         // 保存は当日しか絶対しないのでcreateのなかでキーも作って保存する
-        val entity = DailyStepCountEntity.create(stepNum = counter)
+        val entity = DailyStepCountEntity.create(stepNum = stepCount)
         db.save(entity)
     }
 

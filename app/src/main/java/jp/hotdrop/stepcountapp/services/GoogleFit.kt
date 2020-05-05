@@ -12,18 +12,21 @@ import com.google.android.gms.fitness.data.DataPoint
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
 import com.google.android.gms.fitness.request.DataReadRequest
-import dagger.Reusable
 import jp.hotdrop.stepcountapp.common.toEndDateTime
 import jp.hotdrop.stepcountapp.common.toStartDateTime
 import jp.hotdrop.stepcountapp.common.toZonedDateTime
 import jp.hotdrop.stepcountapp.model.DailyStepCount
+import jp.hotdrop.stepcountapp.repository.GoogleFitRepository
+import jp.hotdrop.stepcountapp.ui.BaseViewModel
+import kotlinx.coroutines.launch
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-@Reusable
-class GoogleFit @Inject constructor() {
+class GoogleFit @Inject constructor(
+    private val repository: GoogleFitRepository
+) : BaseViewModel() {
 
     private val mutableSignIn = MutableLiveData<GoogleSignInAccount?>()
     val signIn: LiveData<GoogleSignInAccount?> = mutableSignIn
@@ -78,47 +81,51 @@ class GoogleFit @Inject constructor() {
             .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
             .addOnSuccessListener {
                 Timber.d("GoogleFitから今日のレスポンスがきました。")
-                if (it.dataPoints.isEmpty()) {
-                    postDataInPoint(null, ZonedDateTime.now())
-                } else {
-                    it.dataPoints.first().let { dp ->
-                        postDataInPoint(dp, ZonedDateTime.now())
-                    }
-                }
+                val dataPoint = it.dataPoints?.firstOrNull()
+                postDataInPoint(dataPoint, ZonedDateTime.now())
             }
     }
 
-    fun findStepCount(context: Context, targetAt: ZonedDateTime) {
-        // TODO 過去のデータはDBに入れて、DBにあったらそこから取得したい
+    fun findPastStepCount(context: Context, targetAt: ZonedDateTime) {
+        launch {
+            // TODO 過去7日間くらい一気にとった方がいいかも
+            Timber.d("$targetAt の歩数をDBから取得します。")
+            val daily = repository.find(targetAt)
+            if (daily != null) {
+                Timber.d("DBから取得できたのでそのまま返します。")
+                mutableCounter.postValue(daily)
+            } else {
+                Timber.d("DBに登録されていないので保存します。")
+                registerPastCount(context, targetAt)
+            }
+        }
+    }
+
+    private fun registerPastCount(context: Context, targetAt: ZonedDateTime) {
         val request = requestHistoryData(targetAt)
         Fitness.getHistoryClient(context, account(context))
             .readData(request)
             .addOnSuccessListener {
                 Timber.d("GoogleFitから過去のレスポンスがきました。")
-
                 val dataPoint = it.buckets?.firstOrNull()
                     ?.getDataSet(DataType.AGGREGATE_STEP_COUNT_DELTA)
                     ?.dataPoints?.firstOrNull()
-
-                if (dataPoint == null) {
-                    Timber.d("${targetAt}のbucketに入っているdataPointは空です。")
-                    postDataInPoint(null, targetAt)
-                    return@addOnSuccessListener
-                } else {
-                    postDataInPoint(dataPoint, targetAt)
-                }
+                postDataInPoint(dataPoint, targetAt)
             }
     }
 
     private fun postDataInPoint(dp: DataPoint?, dayAt: ZonedDateTime) {
         val daily = if (dp != null) {
             val value = dp.getValue(Field.FIELD_STEPS)
-            Timber.d("start=${dp.getStartTime(TimeUnit.MILLISECONDS).toZonedDateTime()} end=${dp.getEndTime(TimeUnit.MILLISECONDS).toZonedDateTime()} value=${value}")
-            DailyStepCount(stepNum = value.asInt().toLong(), dayAt = ZonedDateTime.now())
+            DailyStepCount(stepNum = value.asInt().toLong(), dayAt = dayAt)
         } else {
             DailyStepCount(stepNum = 0, dayAt = dayAt)
         }
-        mutableCounter.postValue(daily)
+
+        launch {
+            repository.save(daily)
+            mutableCounter.postValue(daily)
+        }
     }
 
     private fun requestHistoryData(targetAt: ZonedDateTime): DataReadRequest {

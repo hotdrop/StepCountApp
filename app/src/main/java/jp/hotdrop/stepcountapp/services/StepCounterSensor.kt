@@ -8,8 +8,6 @@ import android.hardware.SensorManager
 import android.os.SystemClock
 import androidx.core.content.getSystemService
 import androidx.lifecycle.*
-import dagger.Reusable
-import jp.hotdrop.stepcountapp.common.sumByLong
 import jp.hotdrop.stepcountapp.common.toStartDateTime
 import jp.hotdrop.stepcountapp.common.toZonedDateTime
 import jp.hotdrop.stepcountapp.model.Accuracy
@@ -22,8 +20,6 @@ import kotlinx.coroutines.*
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.coroutines.CoroutineContext
 
 /**
  * 問題点

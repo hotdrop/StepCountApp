@@ -9,11 +9,14 @@ import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import jp.hotdrop.stepcountapp.R
 import jp.hotdrop.stepcountapp.common.toFormatWithComma
+import jp.hotdrop.stepcountapp.di.ViewModelFactory
 import jp.hotdrop.stepcountapp.di.component.component
 import jp.hotdrop.stepcountapp.model.DailyStepCount
 import jp.hotdrop.stepcountapp.services.GoogleFit
@@ -26,7 +29,8 @@ import javax.inject.Inject
 class GoogleFitFragment : Fragment() {
 
     @Inject
-    lateinit var googleFit: GoogleFit
+    lateinit var factory: ViewModelFactory<GoogleFit>
+    private val googleFit: GoogleFit by viewModels { factory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_google_fit, container, false)
@@ -63,6 +67,7 @@ class GoogleFitFragment : Fragment() {
         googleFit.counter.observe(viewLifecycleOwner, Observer {
             initStepCountView(it)
         })
+        lifecycle.addObserver(googleFit)
     }
 
     private fun preparedGoogleSignIn() {
@@ -104,7 +109,7 @@ class GoogleFitFragment : Fragment() {
                     if (isSelectToday(date)) {
                         googleFit.registerTodayCount(requireContext())
                     } else {
-                        googleFit.findStepCount(requireContext(), date)
+                        googleFit.findPastStepCount(requireContext(), date)
                     }
                 }
                 override fun onPageScrollStateChanged(state: Int) { /** no op  */ }
