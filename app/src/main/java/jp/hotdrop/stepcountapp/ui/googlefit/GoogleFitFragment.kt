@@ -9,17 +9,14 @@ import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import jp.hotdrop.stepcountapp.R
 import jp.hotdrop.stepcountapp.common.toFormatWithComma
-import jp.hotdrop.stepcountapp.di.ViewModelFactory
 import jp.hotdrop.stepcountapp.di.component.component
 import jp.hotdrop.stepcountapp.model.DailyStepCount
 import jp.hotdrop.stepcountapp.services.GoogleFit
-import jp.hotdrop.stepcountapp.ui.MainViewModel
 import jp.hotdrop.stepcountapp.ui.adapter.DateViewPagerAdapter
 import kotlinx.android.synthetic.main.fragment_google_fit.*
 import org.threeten.bp.ZonedDateTime
@@ -32,13 +29,12 @@ class GoogleFitFragment : Fragment() {
     lateinit var googleFit: GoogleFit
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val root = inflater.inflate(R.layout.fragment_google_fit, container, false)
-        component?.inject(this)
-        return root
+        return inflater.inflate(R.layout.fragment_google_fit, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        component.inject(this)
 
         initView()
         observe()

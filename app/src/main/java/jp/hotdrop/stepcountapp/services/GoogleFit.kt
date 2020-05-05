@@ -78,8 +78,12 @@ class GoogleFit @Inject constructor() {
             .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
             .addOnSuccessListener {
                 Timber.d("GoogleFitから今日のレスポンスがきました。")
-                it.dataPoints.first().let { dp ->
-                    postDataInPoint(dp, ZonedDateTime.now())
+                if (it.dataPoints.isEmpty()) {
+                    postDataInPoint(null, ZonedDateTime.now())
+                } else {
+                    it.dataPoints.first().let { dp ->
+                        postDataInPoint(dp, ZonedDateTime.now())
+                    }
                 }
             }
     }

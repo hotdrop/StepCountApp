@@ -1,15 +1,15 @@
 package jp.hotdrop.stepcountapp.repository
 
 import dagger.Reusable
-import jp.hotdrop.stepcountapp.common.sumByLong
-import jp.hotdrop.stepcountapp.common.toLongYearMonthDay
-import jp.hotdrop.stepcountapp.common.toZonedDateTime
+import jp.hotdrop.stepcountapp.common.*
 import jp.hotdrop.stepcountapp.model.DeviceDetail
 import jp.hotdrop.stepcountapp.model.DailyStepCount
 import jp.hotdrop.stepcountapp.repository.local.SharedPrefs
 import jp.hotdrop.stepcountapp.repository.local.room.StepCounterDatabase
 import jp.hotdrop.stepcountapp.repository.local.room.DailyStepCountEntity
+import org.threeten.bp.Instant
 import org.threeten.bp.ZonedDateTime
+import timber.log.Timber
 import javax.inject.Inject
 
 @Reusable
@@ -27,9 +27,27 @@ class StepCounterRepository @Inject constructor(
         }
     }
 
-    suspend fun totalCountPreviousDateStepNum(): Long {
+    suspend fun findRange(startAt: ZonedDateTime, endAt: ZonedDateTime): List<DailyStepCount> {
+        val startAtDateTime = startAt.toStartDateTime()
+        val endAtDateTime = endAt.toEndDateTime()
+        Timber.d("$startAtDateTime から $endAtDateTime の範囲を取得")
+        return db.selectAll(startAtDateTime.toInstant(), endAtDateTime.toInstant())
+            .map {
+                DailyStepCount(it.stepNum, it.dayInstant.toZonedDateTime())
+            }
+    }
+
+    suspend fun totalStepCountNumPreviousDate(): Long {
         val todayKey = ZonedDateTime.now().toLongYearMonthDay()
         return db.selectAll()
+            .filter { it.id != todayKey }
+            .sumByLong { it.stepNum }
+    }
+
+    suspend fun rangeStepCountNumPreviousDate(startAt: ZonedDateTime): Long {
+        val todayKey = ZonedDateTime.now().toLongYearMonthDay()
+        val startAtDateTime = startAt.toStartDateTime()
+        return db.selectAll(startAtDateTime.toInstant())
             .filter { it.id != todayKey }
             .sumByLong { it.stepNum }
     }

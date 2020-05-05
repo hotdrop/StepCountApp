@@ -16,39 +16,39 @@ import jp.hotdrop.stepcountapp.di.component.component
 import jp.hotdrop.stepcountapp.model.Accuracy
 import jp.hotdrop.stepcountapp.model.DailyStepCount
 import jp.hotdrop.stepcountapp.model.DeviceDetail
-import jp.hotdrop.stepcountapp.ui.MainViewModel
+import jp.hotdrop.stepcountapp.services.StepCounterSensor
 import jp.hotdrop.stepcountapp.ui.adapter.DateViewPagerAdapter
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.threeten.bp.ZonedDateTime
+import timber.log.Timber
 import javax.inject.Inject
 
 class HomeFragment: Fragment() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory<MainViewModel>
-    private val viewModel: MainViewModel by activityViewModels { viewModelFactory }
+    lateinit var factory: ViewModelFactory<StepCounterSensor>
+    private val stepCounterSensor: StepCounterSensor by activityViewModels { factory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
-        component?.inject(this)
-        return root
+        return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        component.inject(this)
 
         initViewPager(ZonedDateTime.now())
         observe()
     }
 
     private fun observe() {
-        viewModel.dailyStepCounter.observe(viewLifecycleOwner, Observer {
+        stepCounterSensor.dailyStepCounter.observe(viewLifecycleOwner, Observer {
             initStepCountView(it)
         })
-        viewModel.accuracy.observe(viewLifecycleOwner, Observer {
+        stepCounterSensor.accuracy.observe(viewLifecycleOwner, Observer {
             initAccuracy(it)
         })
-        viewModel.deviceDetail.observe(viewLifecycleOwner, Observer {
+        stepCounterSensor.deviceDetail.observe(viewLifecycleOwner, Observer {
             initDetail(it)
         })
     }
@@ -79,7 +79,7 @@ class HomeFragment: Fragment() {
             it.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageSelected(position: Int) {
                     val date = currentAt.plusDays(viewPagerDayList[position])
-                    viewModel.findStepCount(date)
+                    stepCounterSensor.onLoadPastStepCount(date)
                 }
                 override fun onPageScrollStateChanged(state: Int) { /** no op  */ }
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) { /** no op  */ }

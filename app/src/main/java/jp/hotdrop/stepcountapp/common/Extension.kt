@@ -11,6 +11,16 @@ fun Long.toZonedDateTime(): ZonedDateTime =
 fun Instant.toZonedDateTime(): ZonedDateTime =
     ZonedDateTime.ofInstant(this, ZoneId.systemDefault())
 
+fun ZonedDateTime.toStartDateTime(): ZonedDateTime {
+    return ZonedDateTime.of(this.year, this.monthValue, this.dayOfMonth, 0, 0, 0, 0, ZoneId.systemDefault())
+}
+
+fun ZonedDateTime.toEndDateTime(): ZonedDateTime {
+    val nextDay = this.plusDays(1)
+    val nextDayStartTime = ZonedDateTime.of(nextDay.year, nextDay.monthValue, nextDay.dayOfMonth, 0, 0, 0, 0, ZoneId.systemDefault())
+    return nextDayStartTime.minusNanos(1)
+}
+
 fun ZonedDateTime.toLongYearMonthDay(): Long {
     val monthStr = this.month.value.toString().padStart(2, '0')
     val dayStr = this.dayOfMonth.toString().padStart(2, '0')

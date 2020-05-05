@@ -11,4 +11,4 @@ val Activity.component
     get() = (application as DaggerComponentProvider).component.plus()
 
 val Fragment.component
-    get() = activity?.component?.plus()
+    get() = requireActivity().component.plus()

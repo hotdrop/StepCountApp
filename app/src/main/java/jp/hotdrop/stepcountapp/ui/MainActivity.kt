@@ -26,11 +26,8 @@ import javax.inject.Inject
 class MainActivity: AppCompatActivity() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory<MainViewModel>
-    private val viewModel: MainViewModel by viewModels { viewModelFactory }
-
-    @Inject
-    lateinit var stepCounterSensor: StepCounterSensor
+    lateinit var factory: ViewModelFactory<StepCounterSensor>
+    private val stepCounterSensor: StepCounterSensor by viewModels { factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,12 +35,7 @@ class MainActivity: AppCompatActivity() {
         component.inject(this)
 
         initView()
-        observe()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        stepCounterSensor.unregisterListener()
+        lifecycle.addObserver(stepCounterSensor)
     }
 
     private fun initView() {
@@ -62,18 +54,6 @@ class MainActivity: AppCompatActivity() {
         } else {
             initStepSensorView()
         }
-    }
-
-    private fun observe() {
-        stepCounterSensor.counter.observe(this, Observer {
-            viewModel.calcTodayCount(it)
-        })
-        stepCounterSensor.accuracy.observe(this, Observer {
-            viewModel.updateAccuracy(it)
-        })
-        stepCounterSensor.counterFromOS.observe(this, Observer {
-            viewModel.updateCounterInOS(it)
-        })
     }
 
     @NeedsPermission(Manifest.permission.ACTIVITY_RECOGNITION)

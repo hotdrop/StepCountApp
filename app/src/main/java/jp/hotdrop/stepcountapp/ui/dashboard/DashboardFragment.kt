@@ -21,7 +21,7 @@ class DashboardFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_dashboard, container, false)
-        component?.inject(this)
+        component.inject(this)
         return root
     }
 }

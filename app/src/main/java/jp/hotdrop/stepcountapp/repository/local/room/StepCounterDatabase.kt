@@ -19,6 +19,14 @@ class StepCounterDatabase @Inject constructor(
         return dao.selectAll()
     }
 
+    suspend fun selectAll(startAt: Instant): List<DailyStepCountEntity> {
+        return dao.selectAll(startAt)
+    }
+
+    suspend fun selectAll(startAt: Instant, endAt: Instant): List<DailyStepCountEntity> {
+        return dao.selectAll(startAt, endAt)
+    }
+
     suspend fun save(entity: DailyStepCountEntity) {
         dao.insert(entity)
     }
@@ -32,6 +40,12 @@ interface StepCounterDao {
 
     @Query("SELECT * FROM ${DailyStepCountEntity.TABLE_NAME}")
     suspend fun selectAll(): List<DailyStepCountEntity>
+
+    @Query("SELECT * FROM ${DailyStepCountEntity.TABLE_NAME} WHERE dayInstant > :startAt")
+    suspend fun selectAll(startAt: Instant): List<DailyStepCountEntity>
+
+    @Query("SELECT * FROM ${DailyStepCountEntity.TABLE_NAME} WHERE dayInstant BETWEEN :startAt AND :endAt")
+    suspend fun selectAll(startAt: Instant, endAt: Instant): List<DailyStepCountEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: DailyStepCountEntity)
