@@ -157,12 +157,12 @@ class StepCounterSensor @Inject constructor(
         mutableDeviceDetail.postValue(detail)
     }
 
-    private fun calcStepCountBeforeRebootDevice(stepCountFromOS: Long, appFirstStartStepCount: Long) {
+    private fun calcStepCountAfterRebootDevice(stepCountFromOS: Long) {
         launch {
-            Timber.d("アプリを起動してから一度も端末再起動していない。")
-            val prevStepNum = stepCounterRepository.totalStepCountNumPreviousDate()
-            Timber.d("OSから受け取った歩数=$stepCountFromOS 前日までの歩数=$prevStepNum アプリ起動時歩数=$appFirstStartStepCount")
-            val effectiveCount = (stepCountFromOS - appFirstStartStepCount) - prevStepNum
+            Timber.d("アプリを起動してから端末再起動を1回以上している。")
+            val prevStepNum = stepCounterRepository.rangeStepCountNumPreviousDate(rebootDateTimeEpoch.toZonedDateTime())
+            Timber.d("OSから受け取った歩数=$stepCountFromOS 再起動後から前日までの歩数=$prevStepNum これの差し引きが有効歩数")
+            val effectiveCount = stepCountFromOS - prevStepNum
 
             Timber.d("　　有効歩数=$effectiveCount")
             stepCounterRepository.save(effectiveCount)
@@ -174,12 +174,12 @@ class StepCounterSensor @Inject constructor(
         }
     }
 
-    private fun calcStepCountAfterRebootDevice(stepCountFromOS: Long) {
+    private fun calcStepCountBeforeRebootDevice(stepCountFromOS: Long, appFirstStartStepCount: Long) {
         launch {
-            Timber.d("アプリを起動してから端末再起動を1回以上している。")
-            val prevStepNum = stepCounterRepository.rangeStepCountNumPreviousDate(rebootDateTimeEpoch.toZonedDateTime())
-            Timber.d("OSから受け取った歩数=$stepCountFromOS 再起動後から前日までの歩数=$prevStepNum これの差し引きが有効歩数")
-            val effectiveCount = stepCountFromOS - prevStepNum
+            Timber.d("アプリを起動してから一度も端末再起動していない。")
+            val prevStepNum = stepCounterRepository.totalStepCountNumPreviousDate()
+            Timber.d("OSから受け取った歩数=$stepCountFromOS 前日までの歩数=$prevStepNum アプリ起動時歩数=$appFirstStartStepCount")
+            val effectiveCount = (stepCountFromOS - appFirstStartStepCount) - prevStepNum
 
             Timber.d("　　有効歩数=$effectiveCount")
             stepCounterRepository.save(effectiveCount)
