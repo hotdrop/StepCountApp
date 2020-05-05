@@ -13,7 +13,8 @@ import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
 import com.google.android.gms.fitness.request.DataReadRequest
 import dagger.Reusable
-import jp.hotdrop.stepcountapp.common.toStartDayEpochSecond
+import jp.hotdrop.stepcountapp.common.toEndDateTime
+import jp.hotdrop.stepcountapp.common.toStartDateTime
 import jp.hotdrop.stepcountapp.common.toZonedDateTime
 import jp.hotdrop.stepcountapp.model.DailyStepCount
 import org.threeten.bp.ZonedDateTime
@@ -88,19 +89,23 @@ class GoogleFit @Inject constructor() {
     }
 
     fun findStepCount(context: Context, targetAt: ZonedDateTime) {
-        // TODO 過去のデータはDBから取得したほうがいいのでは
+        // TODO 過去のデータはDBに入れて、DBにあったらそこから取得したい
         val request = requestHistoryData(targetAt)
         Fitness.getHistoryClient(context, account(context))
             .readData(request)
             .addOnSuccessListener {
                 Timber.d("GoogleFitから過去のレスポンスがきました。")
-                val dataPoints = it.getDataSet(DataType.AGGREGATE_STEP_COUNT_DELTA).dataPoints
-                if (dataPoints.isEmpty()) {
-                    Timber.d("${targetAt}のdataPointは空です。")
+
+                val dataPoint = it.buckets?.firstOrNull()
+                    ?.getDataSet(DataType.AGGREGATE_STEP_COUNT_DELTA)
+                    ?.dataPoints?.firstOrNull()
+
+                if (dataPoint == null) {
+                    Timber.d("${targetAt}のbucketに入っているdataPointは空です。")
                     postDataInPoint(null, targetAt)
+                    return@addOnSuccessListener
                 } else {
-                    Timber.d("${targetAt}のdataPointは${dataPoints.size}件です。")
-                    postDataInPoint(dataPoints.first(), targetAt)
+                    postDataInPoint(dataPoint, targetAt)
                 }
             }
     }
@@ -119,7 +124,7 @@ class GoogleFit @Inject constructor() {
     private fun requestHistoryData(targetAt: ZonedDateTime): DataReadRequest {
         return DataReadRequest.Builder()
             .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
-            .setTimeRange(targetAt.toStartDayEpochSecond(), targetAt.toEpochSecond(), TimeUnit.SECONDS)
+            .setTimeRange(targetAt.toStartDateTime().toEpochSecond(), targetAt.toEndDateTime().toEpochSecond(), TimeUnit.SECONDS)
             .bucketByTime(1, TimeUnit.DAYS)
             .build()
     }

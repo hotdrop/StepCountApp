@@ -27,10 +27,6 @@ fun ZonedDateTime.toLongYearMonthDay(): Long {
     return "${this.year}${monthStr}${dayStr}".toLong()
 }
 
-fun ZonedDateTime.toStartDayEpochSecond(): Long {
-    return ZonedDateTime.of(this.year, this.monthValue, this.dayOfMonth, 0, 0, 0, 0, ZoneId.systemDefault()).toEpochSecond()
-}
-
 fun <T> Iterable<T>.sumByLong(selector: (T) -> Long): Long {
     var sum: Long = 0
     for (element in this) {
