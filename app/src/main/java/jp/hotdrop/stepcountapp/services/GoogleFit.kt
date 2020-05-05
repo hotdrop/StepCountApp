@@ -13,7 +13,6 @@ import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
 import com.google.android.gms.fitness.request.DataReadRequest
 import dagger.Reusable
-import jp.hotdrop.stepcountapp.common.toLongYearMonthDay
 import jp.hotdrop.stepcountapp.common.toStartDayEpochSecond
 import jp.hotdrop.stepcountapp.common.toZonedDateTime
 import jp.hotdrop.stepcountapp.model.DailyStepCount

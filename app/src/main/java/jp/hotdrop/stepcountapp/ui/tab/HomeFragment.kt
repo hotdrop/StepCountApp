@@ -1,4 +1,4 @@
-package jp.hotdrop.stepcountapp.ui.home
+package jp.hotdrop.stepcountapp.ui.tab
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,7 +20,6 @@ import jp.hotdrop.stepcountapp.services.StepCounterSensor
 import jp.hotdrop.stepcountapp.ui.adapter.DateViewPagerAdapter
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.threeten.bp.ZonedDateTime
-import timber.log.Timber
 import javax.inject.Inject
 
 class HomeFragment: Fragment() {

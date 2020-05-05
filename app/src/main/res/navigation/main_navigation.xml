@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="jp.hotdrop.stepcountapp.ui.home.HomeFragment"
+        android:name="jp.hotdrop.stepcountapp.ui.tab.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/navigation_google_fit"
-        android:name="jp.hotdrop.stepcountapp.ui.googlefit.GoogleFitFragment"
+        android:name="jp.hotdrop.stepcountapp.ui.tab.GoogleFitFragment"
         android:label="@string/title_google_fit"
         tools:layout="@layout/fragment_google_fit" />
     <fragment

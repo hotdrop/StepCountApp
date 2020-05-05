@@ -1,4 +1,4 @@
-package jp.hotdrop.stepcountapp.ui.googlefit
+package jp.hotdrop.stepcountapp.ui.tab
 
 import android.app.Activity
 import android.content.Intent
