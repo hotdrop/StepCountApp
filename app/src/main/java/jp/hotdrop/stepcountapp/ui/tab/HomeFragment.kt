@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -53,20 +55,8 @@ class HomeFragment: Fragment() {
     }
 
     private fun initStepCountView(dailyStepCount: DailyStepCount) {
-        // 日付の下の概要
-        if (isSelectToday(dailyStepCount.dayAt)) {
-            overview.text = getString(R.string.device_screen_overview_today)
-        } else {
-            overview.text = getString(R.string.device_screen_overview_past)
-        }
-
-        // 歩数
+        hideLoading()
         step_counter.text = dailyStepCount.stepNum.toFormatWithComma()
-    }
-
-    private fun isSelectToday(targetAt: ZonedDateTime): Boolean {
-        val now = ZonedDateTime.now()
-        return now.year == targetAt.year && now.monthValue == targetAt.monthValue && now.dayOfMonth == targetAt.dayOfMonth
     }
 
     private fun initViewPager(currentAt: ZonedDateTime) {
@@ -102,5 +92,15 @@ class HomeFragment: Fragment() {
         step_count_in_os.text = deviceDetail.stepCounterFromOS.toFormatWithComma()
         step_count_by_reboot.text = deviceDetail.appStartFirstCounter.toFormatWithComma()
         device_screen_os_reboot_date.text = deviceDetail.getInitAfterRebootDateTime()?.format(Formatter.ofDateTime) ?: getString(R.string.device_screen_os_reboot_non_date)
+    }
+
+    private fun visibleLoading() {
+        step_counter.isInvisible = true
+        progress_bar.isVisible = true
+    }
+
+    private fun hideLoading() {
+        step_counter.isVisible = true
+        progress_bar.isVisible = false
     }
 }

@@ -20,9 +20,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="@string/device_screen_overview_today"
+        android:text="@string/device_screen_overview"
         android:textSize="24sp"
-        android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date_view_pager" />
@@ -34,7 +33,6 @@
         android:layout_marginTop="16dp"
         style="@style/StepCounter"
         android:visibility="invisible"
-        android:text="@string/google_fit_screen_step_count_loading"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/overview"
@@ -83,11 +81,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:text="@string/google_fit_screen_auth_disable_status"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/google_fit_access_status_label"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="OK" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:id="@+id/counter_separator"
@@ -99,16 +97,26 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/google_fit_access_status_label" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/enable_button"
+            <TextView
+                android:id="@+id/description_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                style="@style/Widget.MaterialComponents.Button"
-                android:text="@string/google_fit_screen_disable_button"
+                android:text="@string/google_fit_screen_disable_desc_title"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/counter_separator" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/google_fit_screen_disable_desc"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/description_title" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

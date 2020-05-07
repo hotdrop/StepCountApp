@@ -67,13 +67,6 @@ class GoogleFit @Inject constructor(
         mutableSignIn.postValue(account)
     }
 
-    fun signOut(context: Context) {
-        GoogleSignIn.getLastSignedInAccount(context)?.run {
-            Fitness.getConfigClient(context, this).disableFit()
-            mutableSignIn.postValue(null)
-        }
-    }
-
     fun registerTodayCount(context: Context) {
         Timber.d("GoogleFitのHistoryClientリスナーを登録")
         Fitness.getHistoryClient(context, account(context))

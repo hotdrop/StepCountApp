@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="@string/device_screen_overview_today"
+        android:text="@string/device_screen_overview"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,11 +32,20 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         style="@style/StepCounter"
-        android:text="@string/device_screen_step_count_loading"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/overview"
         tools:text="6,544" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/detail_card_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/overview" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/detail_card_view"
@@ -146,6 +155,5 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

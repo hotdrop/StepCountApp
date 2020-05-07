@@ -46,6 +46,7 @@ class GoogleFitFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_OK) {
+            disableGoogleFit()
             return
         }
 
@@ -80,20 +81,12 @@ class GoogleFitFragment : Fragment() {
 
     private fun initAccountInfo(account: GoogleSignInAccount?) {
         if (account != null) {
-            Timber.d("GoogleFitとの連携を有効にしました。")
+            Timber.d("GoogleFitとの連携が有効です。")
             google_fit_access_status.text = getString(R.string.google_fit_screen_auth_enable_status)
-            enable_button.text = getString(R.string.google_fit_screen_disable_button)
-            enable_button.setOnClickListener {
-                googleFit.signOut(requireContext())
-            }
             googleFit.registerTodayCount(requireContext())
         } else {
-            Timber.d("GoogleFitとの連携を無効にしました。")
+            Timber.d("GoogleFitとの連携が無効です。")
             google_fit_access_status.text = getString(R.string.google_fit_screen_auth_disable_status)
-            enable_button.text = getString(R.string.google_fit_screen_enable_button)
-            enable_button.setOnClickListener {
-                preparedGoogleSignIn()
-            }
         }
     }
 
@@ -120,20 +113,18 @@ class GoogleFitFragment : Fragment() {
 
     private fun initStepCountView(dailyStepCount: DailyStepCount) {
         hideLoading()
-        // 日付の下の概要
-        if (isSelectToday(dailyStepCount.dayAt)) {
-            overview.text = getString(R.string.device_screen_overview_today)
-        } else {
-            overview.text = getString(R.string.device_screen_overview_past)
-        }
-
-        // 歩数
         step_counter.text = dailyStepCount.stepNum.toFormatWithComma()
     }
 
     private fun isSelectToday(targetAt: ZonedDateTime): Boolean {
         val now = ZonedDateTime.now()
         return now.year == targetAt.year && now.monthValue == targetAt.monthValue && now.dayOfMonth == targetAt.dayOfMonth
+    }
+
+    private fun disableGoogleFit() {
+        hideLoading()
+        initAccountInfo(null)
+        step_counter.text = "0"
     }
 
     private fun visibleLoading() {
