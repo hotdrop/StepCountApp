@@ -51,14 +51,17 @@
         android:id="@+id/detail_card_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         app:cardCornerRadius="4dp"
         app:cardUseCompatPadding="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/step_counter">
+        app:layout_constraintTop_toBottomOf="@+id/step_counter"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -100,55 +103,67 @@
 
             <TextView
                 android:id="@+id/step_count_in_os_label"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/device_screen_step_count_in_os_label"
+                app:layout_constraintEnd_toStartOf="@+id/step_count_in_os"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/counter_separator" />
 
             <TextView
                 android:id="@+id/step_count_in_os"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/step_count_in_os_label"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/step_count_in_os_label"
                 app:layout_constraintTop_toTopOf="@+id/step_count_in_os_label"
                 tools:text="21,345" />
 
             <TextView
                 android:id="@+id/step_count_by_reboot_label"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/device_screen_step_count_by_reboot_label"
-                app:layout_constraintStart_toStartOf="@+id/step_count_in_os_label"
+                android:text="@string/device_screen_step_count_by_app_first_time_label"
+                app:layout_constraintEnd_toStartOf="@+id/step_count_by_reboot"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/step_count_in_os_label" />
 
             <TextView
                 android:id="@+id/step_count_by_reboot"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/step_count_by_reboot_label"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/step_count_by_reboot_label"
                 app:layout_constraintTop_toTopOf="@+id/step_count_by_reboot_label"
                 tools:text="16,345" />
 
             <TextView
                 android:id="@+id/device_screen_os_reboot_date_label"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/device_screen_os_reboot_date"
-                app:layout_constraintStart_toStartOf="@+id/step_count_by_reboot_label"
+                app:layout_constraintEnd_toStartOf="@+id/device_screen_os_reboot_date"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/step_count_by_reboot_label" />
 
             <TextView
                 android:id="@+id/device_screen_os_reboot_date"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/device_screen_os_reboot_date_label"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/device_screen_os_reboot_date_label"
                 app:layout_constraintTop_toTopOf="@+id/device_screen_os_reboot_date_label"
                 tools:text="2020年4月2日" />

@@ -77,7 +77,6 @@ class HomeFragment: Fragment() {
     }
 
     private fun initAccuracy(accuracy: Accuracy) {
-        // TODO 表示色変えたい
         val messageResId = when (accuracy) {
             Accuracy.High -> R.string.accuracy_high_message
             Accuracy.Medium -> R.string.accuracy_medium_message
