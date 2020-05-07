@@ -48,4 +48,7 @@
     <string name="google_fit_screen_enable_button">Fit連携を有効にする</string>
     <string name="google_fit_screen_disable_button">Fit連携を無効にする</string>
 
+    <string name="dashboard_screen_chip_sensor">端末センサー</string>
+    <string name="dashboard_screen_chip_google_fit">GoogleFit</string>
+
 </resources>

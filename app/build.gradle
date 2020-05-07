@@ -64,6 +64,8 @@ dependencies {
     implementation "androidx.room:room-ktx:2.2.5"
     kapt "androidx.room:room-compiler:2.2.5"
 
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
     // パーミッション
     implementation "com.github.hotchemi:permissionsdispatcher:3.3.1"
     kapt "com.github.hotchemi:permissionsdispatcher-processor:3.3.1"

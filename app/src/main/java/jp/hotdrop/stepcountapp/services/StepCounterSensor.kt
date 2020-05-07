@@ -91,7 +91,6 @@ class StepCounterSensor @Inject constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun dispose() {
         unregisterListener()
-        coroutineContext.cancel()
     }
 
     fun registerListener(): Boolean {
@@ -189,7 +188,7 @@ class StepCounterSensor @Inject constructor(
 
     private suspend fun findStepCount(targetAt: ZonedDateTime) {
         // 歩数がない日も画面表示したいのでカウント0としてLiveDataに投げる。
-        val dailyStepCount = stepCounterRepository.find(targetAt) ?: DailyStepCount(stepNum = 0, dayAt = targetAt)
+        val dailyStepCount = stepCounterRepository.find(targetAt)
         Timber.d("この日のDBから取得した歩数=$dailyStepCount")
         mutableDailyStepCount.postValue(dailyStepCount)
     }

@@ -14,7 +14,6 @@ import com.google.android.gms.fitness.data.Field
 import com.google.android.gms.fitness.request.DataReadRequest
 import jp.hotdrop.stepcountapp.common.toEndDateTime
 import jp.hotdrop.stepcountapp.common.toStartDateTime
-import jp.hotdrop.stepcountapp.common.toZonedDateTime
 import jp.hotdrop.stepcountapp.model.DailyStepCount
 import jp.hotdrop.stepcountapp.repository.GoogleFitRepository
 import jp.hotdrop.stepcountapp.ui.BaseViewModel
@@ -115,16 +114,13 @@ class GoogleFit @Inject constructor(
     }
 
     private fun postDataInPoint(dp: DataPoint?, dayAt: ZonedDateTime) {
-        val daily = if (dp != null) {
-            val value = dp.getValue(Field.FIELD_STEPS)
-            DailyStepCount(stepNum = value.asInt().toLong(), dayAt = dayAt)
-        } else {
-            DailyStepCount(stepNum = 0, dayAt = dayAt)
-        }
+        val stepNum = dp?.getValue(Field.FIELD_STEPS)?.asInt()?.toLong() ?: 0
 
         launch {
-            repository.save(daily)
-            mutableCounter.postValue(daily)
+            repository.save(stepNum, dayAt)
+            repository.find(dayAt)?.let {
+                mutableCounter.postValue(it)
+            }
         }
     }
 

@@ -16,24 +16,35 @@ class StepCounterRepository @Inject constructor(
     private val db: StepCounterDatabase,
     private val sharedPrefs: SharedPrefs
 ) {
-    suspend fun find(targetAt: ZonedDateTime): DailyStepCount? {
-        val key = targetAt.toLongYearMonthDay()
-        return db.select(key)?.let {
+    /**
+     * DBにない日のデータも歩数0で取得する
+     */
+    suspend fun find(targetAt: ZonedDateTime): DailyStepCount {
+        val ymdKey = targetAt.toLongYearMonthDay()
+        return db.select(ymdKey)?.let {
             DailyStepCount(
+                ymdId = it.id,
                 stepNum = it.stepNum,
                 dayAt = it.dayInstant.toZonedDateTime()
             )
-        }
+        } ?: DailyStepCount(ymdId = ymdKey, stepNum = 0, dayAt = targetAt)
     }
 
     suspend fun findRange(startAt: ZonedDateTime, endAt: ZonedDateTime): List<DailyStepCount> {
         val startAtDateTime = startAt.toStartDateTime()
         val endAtDateTime = endAt.toEndDateTime()
         Timber.d("$startAtDateTime から $endAtDateTime の範囲を取得")
+
         return db.selectAll(startAtDateTime.toInstant(), endAtDateTime.toInstant())
             .map {
-                DailyStepCount(it.stepNum, it.dayInstant.toZonedDateTime())
+                DailyStepCount(it.id, it.stepNum, it.dayInstant.toZonedDateTime())
             }
+    }
+
+    suspend fun save(stepCount: Long) {
+        // 保存は当日しか絶対しないのでcreateのなかでキーも作って保存する
+        val entity = DailyStepCountEntity.create(stepNum = stepCount)
+        db.save(entity)
     }
 
     suspend fun totalStepCountNumPreviousDate(): Long {
@@ -49,12 +60,6 @@ class StepCounterRepository @Inject constructor(
         return db.selectAll(startAtDateTime.toInstant())
             .filter { it.id != todayKey }
             .sumByLong { it.stepNum }
-    }
-
-    suspend fun save(stepCount: Long) {
-        // 保存は当日しか絶対しないのでcreateのなかでキーも作って保存する
-        val entity = DailyStepCountEntity.create(stepNum = stepCount)
-        db.save(entity)
     }
 
     fun getDeviceDetail(counterFromOS: Long): DeviceDetail {
