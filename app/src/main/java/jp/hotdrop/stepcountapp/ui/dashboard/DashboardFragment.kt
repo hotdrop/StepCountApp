@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -92,7 +93,7 @@ class DashboardFragment: Fragment() {
             setDrawValueAboveBar(true) // バーの上に値を表示
             description.isEnabled = false // 詳細表示をしない
             setScaleEnabled(false) // ズームはさせない
-            setTouchEnabled(false) // タップはさせない
+            animateY(300, Easing.Linear) // グラフ表示の際のアニメーション
         }
     }
 
