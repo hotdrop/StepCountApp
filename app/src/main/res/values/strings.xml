@@ -5,6 +5,8 @@
     <string name="title_dashboard">Dashboard</string>
 
     <string name="device_screen_overview">歩数</string>
+    <string name="device_screen_info_button">詳細情報</string>
+    <string name="device_screen_attention_button">注意事項</string>
     <string name="device_screen_sensor_label">センサー感度</string>
     <string name="device_screen_sensor_description_label">
         センサー感度とは端末の歩行センサーの感度状態を表したものです。
@@ -43,16 +45,26 @@
     </string>
     <string name="dialog_to_settings_button">端末のアプリ設定画面</string>
 
-    <string name="google_fit_screen_auth_label">Google Fitとの連携:</string>
-    <string name="google_fit_screen_auth_enable_status">有効</string>
-    <string name="google_fit_screen_auth_disable_status">無効</string>
+    <string name="google_fit_screen_info_button">連携方法</string>
+    <string name="google_fit_screen_info_title">Google Fitとの連携について</string>
+    <string name="google_fit_screen_info_desc">
+        この画面を開いた時に連携許可のダイアログが表示されますので、それに従って許可をお願いします。
+        \n\n許可をせずにダイアログを閉じてしまった場合、再度この画面を開くことで再び連携許可ダイアログが表示されます。
+        \n\n・連携許可をしても歩数が0のままの場合
+        \n連携したGoogleアカウントでGoogleFitを有効にしていないと歩数がカウントできません。
+        \nPlayストアでGoogleFitアプリを端末にインストールし、GoogleFitを有効にしてください。
+        \n\n・連携アカウントを変更したい場合
+        \n一度GoogleFitを解除する必要があります。解除方法に従ってGoogleFitとの連携を解除し再び連携してください。
+    </string>
+
+    <string name="google_fit_screen_disable_desc_button">解除方法</string>
     <string name="google_fit_screen_disable_desc_title">Google Fitとの連携を解除する方法</string>
     <string name="google_fit_screen_disable_desc">
         1.端末の設定アプリを起動します。
         \n2.以下の順にタップします。
         \n\n[Google（サービスと設定）]-> [アカウントサービス] -> [Google Fit] -> [Google Fitのアプリとデバイス]
         \n\n3.アプリの中から「StepCounterApp」をタップし「接続を解除」ボタンで解除してください。
-        \n\n※解除後にこの画面を開くと再度連携が可能です。連携アカウントを変更したい場合もこの手順で可能です。
+        \n\n※解除後にこの画面を開くと再度連携が可能です。
     </string>
 
     <string name="dashboard_screen_chip_sensor">端末センサー</string>

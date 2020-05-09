@@ -9,11 +9,9 @@ import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import jp.hotdrop.stepcountapp.R
 import jp.hotdrop.stepcountapp.common.toFormatWithComma
 import jp.hotdrop.stepcountapp.di.ViewModelFactory
@@ -46,7 +44,6 @@ class GoogleFitFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_OK) {
-            disableGoogleFit()
             return
         }
 
@@ -59,11 +56,20 @@ class GoogleFitFragment : Fragment() {
     private fun initView() {
         preparedGoogleSignIn()
         initViewPager(ZonedDateTime.now())
+
+        info_button.setOnClickListener {
+            google_fit_disable_desc_card_view.isVisible = false
+            info_card_view.isVisible = !info_card_view.isVisible
+        }
+        disable_desc_button.setOnClickListener {
+            info_card_view.isVisible = false
+            google_fit_disable_desc_card_view.isVisible = !google_fit_disable_desc_card_view.isVisible
+        }
     }
 
     private fun observe() {
         googleFit.signIn.observe(viewLifecycleOwner, Observer {
-            initAccountInfo(it)
+            googleFit.registerTodayCount(requireContext())
         })
         googleFit.counter.observe(viewLifecycleOwner, Observer {
             initStepCountView(it)
@@ -76,17 +82,6 @@ class GoogleFitFragment : Fragment() {
             googleFit.requestPermissions(requireActivity(), GOOGLE_FIT_PERMISSION_REQUEST_CODE)
         } else {
             googleFit.signIn(requireContext())
-        }
-    }
-
-    private fun initAccountInfo(account: GoogleSignInAccount?) {
-        if (account != null) {
-            Timber.d("GoogleFitとの連携が有効です。")
-            google_fit_access_status.text = getString(R.string.google_fit_screen_auth_enable_status)
-            googleFit.registerTodayCount(requireContext())
-        } else {
-            Timber.d("GoogleFitとの連携が無効です。")
-            google_fit_access_status.text = getString(R.string.google_fit_screen_auth_disable_status)
         }
     }
 
@@ -119,12 +114,6 @@ class GoogleFitFragment : Fragment() {
     private fun isSelectToday(targetAt: ZonedDateTime): Boolean {
         val now = ZonedDateTime.now()
         return now.year == targetAt.year && now.monthValue == targetAt.monthValue && now.dayOfMonth == targetAt.dayOfMonth
-    }
-
-    private fun disableGoogleFit() {
-        hideLoading()
-        initAccountInfo(null)
-        step_counter.text = "0"
     }
 
     private fun visibleLoading() {
