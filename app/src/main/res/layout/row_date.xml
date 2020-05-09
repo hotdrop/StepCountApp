@@ -29,7 +29,7 @@
         app:layout_constraintEnd_toStartOf="@+id/arrow_next"
         app:layout_constraintStart_toEndOf="@+id/arrow_prev"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="2020年4月30日" />
+        tools:text="2020年4月30日(木)" />
 
     <ImageView
         android:id="@+id/arrow_next"

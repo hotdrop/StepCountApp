@@ -27,7 +27,7 @@ class DateViewPagerAdapter(private val currentAt: ZonedDateTime, private val vie
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val currentDate = currentAt.plusDays(viewPagerDayList[position])
         val view = LayoutInflater.from(container.context).inflate(R.layout.row_date, container, false)
-        view.show_date.text = currentDate.format(Formatter.ofDate)
+        view.show_date.text = currentDate.format(Formatter.ofDateWithDayOfWeek)
         when (position) {
             0 -> {
                 view.arrow_next.isVisible = true
