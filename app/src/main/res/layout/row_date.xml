@@ -18,7 +18,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_chevron_left_black" />
+        app:srcCompat="@drawable/ic_chevron_left" />
 
     <TextView
         android:id="@+id/show_date"
@@ -38,6 +38,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_chevron_right_black_18dp" />
+        app:srcCompat="@drawable/ic_chevron_right" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

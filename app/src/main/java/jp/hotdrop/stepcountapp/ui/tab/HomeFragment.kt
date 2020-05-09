@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -77,20 +78,26 @@ class HomeFragment: Fragment() {
     }
 
     private fun initAccuracy(accuracy: Accuracy) {
-        val messageResId = when (accuracy) {
-            Accuracy.High -> R.string.accuracy_high_message
-            Accuracy.Medium -> R.string.accuracy_medium_message
-            Accuracy.Low -> R.string.accuracy_low_message
-            Accuracy.Unreliable -> R.string.accuracy_unreliable_message
-            Accuracy.NoContact -> R.string.accuracy_no_contact_message
-        }
-        sensor_accuracy.text = getString(messageResId)
+        sensor_accuracy.text = getString(accuracy.labelResId)
+        sensor_accuracy.setTextColor(ContextCompat.getColor(requireContext(), accuracy.colorResId))
     }
 
     private fun initDetail(deviceDetail: DeviceDetail) {
         step_count_in_os.text = deviceDetail.stepCounterFromOS.toFormatWithComma()
         step_count_by_reboot.text = deviceDetail.appStartFirstCounter.toFormatWithComma()
         device_screen_os_reboot_date.text = deviceDetail.getInitAfterRebootDateTime()?.format(Formatter.ofDateTime) ?: getString(R.string.device_screen_os_reboot_non_date)
+
+        info_button.setOnClickListener {
+            attention_card_view.isVisible = false
+            info_card_view.isVisible = !info_card_view.isVisible
+        }
+        sensor_hint_button.setOnClickListener {
+            sensor_hint_description.isVisible = !sensor_hint_description.isVisible
+        }
+        attention_button.setOnClickListener {
+            info_card_view.isVisible = false
+            attention_card_view.isVisible = !attention_card_view.isVisible
+        }
     }
 
     private fun visibleLoading() {

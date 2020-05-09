@@ -5,7 +5,12 @@
     <string name="title_dashboard">Dashboard</string>
 
     <string name="device_screen_overview">歩数</string>
-    <string name="device_screen_sensor_label">センサー感度:</string>
+    <string name="device_screen_sensor_label">センサー感度</string>
+    <string name="device_screen_sensor_description_label">
+        センサー感度とは端末の歩行センサーの感度状態を表したものです。
+        \n次の5つの状態に分けられ、精度が低くなるほど正確な歩数が計測できなくなります。
+        \n\n[高精度、通常精度、低精度、非常に低精度、利用不可]
+    </string>
     <string name="device_screen_step_count_in_os_label">端末の歩行センサーから受け取った歩数:</string>
     <string name="device_screen_step_count_by_app_first_time_label">アプリ初回起動時に端末が持っていた歩数:</string>
     <string name="device_screen_os_reboot_date">前回の端末再起動日時:</string>
@@ -17,6 +22,15 @@
     <string name="accuracy_low_message">低い精度</string>
     <string name="accuracy_unreliable_message">非常に低精度</string>
     <string name="accuracy_no_contact_message">利用不可</string>
+
+    <string name="device_screen_attention_title">歩数に関する注意事項</string>
+    <string name="device_screen_attention_description">
+        この画面で表示している歩数は端末に搭載されている歩行センサーデバイスからほぼリアルタイムで歩数を受信し、アプリ内で計算して表示しています。
+        \n\n受信する歩数は、端末を再起動したタイミングで0となりそこからセンサーが検知した歩数のトータル値となります。
+        \n\nそのため、GoogleFitのように日時単位で計測することが困難であり日々の歩数を計測するには1日1回は必ずアプリを起動する必要があります。
+        \n\n（バックグラウンドに常駐しタイマー制御すれば不可能ではありませんが、昨今のAndroidはサードパーティアプリがバックグラウンドで動く際の制約を厳しくしているのでなかなか難しいと考えます）
+
+    </string>
 
     <string name="permission_show_rationale_message">
         このアプリは歩数をカウントします。
