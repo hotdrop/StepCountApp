@@ -70,7 +70,7 @@
         android:drawableTop="@drawable/ic_google_fit"
         android:drawableTint="@color/gray"
         android:text="@string/google_fit_screen_disable_desc_button"
-        android:textColor="@color/black"
+        android:textColor="@color/yellow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/info_button"

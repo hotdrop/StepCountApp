@@ -1,9 +1,11 @@
 package jp.hotdrop.stepcountapp.ui.dashboard
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -81,6 +83,7 @@ class DashboardFragment: Fragment() {
             // デフォルトのFloat型にすると歩数が小数点表示されて嫌な感じなので整数にしている
             valueFormatter = IntegerValueFormatter()
         }
+        setDataColorForDarkTheme(barDataSet)
         bar_chart.data = BarData(barDataSet)
 
         // 横軸のラベル設定
@@ -94,6 +97,7 @@ class DashboardFragment: Fragment() {
             description.isEnabled = false // 詳細表示をしない
             setScaleEnabled(false) // ズームはさせない
             animateY(300, Easing.Linear) // グラフ表示の際のアニメーション
+            setChartColorForDarkTheme()
         }
     }
 
@@ -104,6 +108,25 @@ class DashboardFragment: Fragment() {
             setDrawGridLines(false)
             setDrawAxisLine(true)
             valueFormatter = IndexAxisValueFormatter(chartData.createDayLabels())
+        }
+    }
+
+    private fun setDataColorForDarkTheme(barDataSet: BarDataSet) {
+        val currentMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        if (currentMode == Configuration.UI_MODE_NIGHT_YES) {
+            val whiteResId = ContextCompat.getColor(requireContext(), R.color.white)
+            barDataSet.valueTextColor = whiteResId
+        }
+    }
+
+    private fun setChartColorForDarkTheme() {
+        val currentMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        if (currentMode == Configuration.UI_MODE_NIGHT_YES) {
+            val whiteResId = ContextCompat.getColor(requireContext(), R.color.white)
+            bar_chart.xAxis.textColor = whiteResId
+            bar_chart.axisLeft.textColor = whiteResId
+            bar_chart.axisRight.textColor = whiteResId
+            bar_chart.legend.textColor = whiteResId
         }
     }
 
