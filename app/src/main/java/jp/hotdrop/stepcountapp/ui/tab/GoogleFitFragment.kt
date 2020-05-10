@@ -88,9 +88,11 @@ class GoogleFitFragment : Fragment() {
     private fun initViewPager(currentAt: ZonedDateTime) {
         val viewPagerDayList = DateViewPagerAdapter.createSelectedList(currentAt)
         date_view_pager.let {
+
             it.adapter = DateViewPagerAdapter(currentAt, viewPagerDayList)
             it.clearOnPageChangeListeners()
             it.currentItem = viewPagerDayList.indexOf(0L)
+
             it.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageSelected(position: Int) {
                     val date = currentAt.plusDays(viewPagerDayList[position])
@@ -103,6 +105,19 @@ class GoogleFitFragment : Fragment() {
                 override fun onPageScrollStateChanged(state: Int) { /** no op  */ }
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) { /** no op  */ }
             })
+
+            it.setPageTransformer(false) { page, position ->
+                val pageWidth: Int = it.measuredWidth - it.paddingLeft - it.paddingRight
+                val transformPos = (page.left - (it.scrollX + it.paddingLeft)).toFloat() / pageWidth
+
+                when {
+                    transformPos == -1f -> page.alpha = 0.5f
+                    -1f < transformPos && transformPos < 0f -> page.alpha = position + 1f
+                    transformPos == 0f -> page.alpha = 1f
+                    0f < transformPos && transformPos < 1f -> page.alpha = 2f - position
+                    transformPos == 1f -> page.alpha = 0.5f
+                }
+            }
         }
     }
 

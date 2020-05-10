@@ -7,18 +7,9 @@
     android:foreground="?android:selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:layout_width="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:layout_width="wrap_content"
     android:layout_height="@dimen/row_date_height">
-
-    <ImageView
-        android:id="@+id/arrow_prev"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_chevron_left" />
 
     <TextView
         android:id="@+id/show_date"
@@ -26,18 +17,9 @@
         android:layout_height="wrap_content"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/arrow_next"
-        app:layout_constraintStart_toEndOf="@+id/arrow_prev"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="2020年4月30日(木)" />
-
-    <ImageView
-        android:id="@+id/arrow_next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_chevron_right" />
+        tools:text="4月30日(木)" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

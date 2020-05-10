@@ -10,6 +10,9 @@
         android:id="@+id/date_view_pager"
         android:layout_width="match_parent"
         android:layout_height="@dimen/row_date_height"
+        android:clipToPadding="false"
+        android:paddingStart="100dp"
+        android:paddingEnd="100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

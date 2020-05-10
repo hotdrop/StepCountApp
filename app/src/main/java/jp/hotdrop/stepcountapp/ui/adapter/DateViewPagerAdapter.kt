@@ -3,7 +3,6 @@ package jp.hotdrop.stepcountapp.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.viewpager.widget.PagerAdapter
 import jp.hotdrop.stepcountapp.R
 import jp.hotdrop.stepcountapp.common.Formatter
@@ -28,20 +27,6 @@ class DateViewPagerAdapter(private val currentAt: ZonedDateTime, private val vie
         val currentDate = currentAt.plusDays(viewPagerDayList[position])
         val view = LayoutInflater.from(container.context).inflate(R.layout.row_date, container, false)
         view.show_date.text = currentDate.format(Formatter.ofDateWithDayOfWeek)
-        when (position) {
-            0 -> {
-                view.arrow_next.isVisible = true
-                view.arrow_prev.isVisible = false
-            }
-            dateListSize - 1 -> {
-                view.arrow_next.isVisible = false
-                view.arrow_prev.isVisible = true
-            }
-            else -> {
-                view.arrow_next.isVisible = true
-                view.arrow_prev.isVisible = true
-            }
-        }
         view.row_date_layout.setOnClickListener {
             // TODO カレンダーを表示する
         }
@@ -51,7 +36,7 @@ class DateViewPagerAdapter(private val currentAt: ZonedDateTime, private val vie
     }
 
     companion object {
-        const val dateListSize = 7
+        private const val dateListSize = 7
 
         /**
          * 指定された日を中心として前後が等間隔になるよう計dateListSize日をViewPagerに指定する。
