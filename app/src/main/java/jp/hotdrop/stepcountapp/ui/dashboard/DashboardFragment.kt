@@ -41,28 +41,15 @@ class DashboardFragment: Fragment() {
         observe()
     }
 
-    private var previousCheckedChipId: Int = R.id.chip_step_counter
     private fun initView() {
         // 初期は通常のセンサー
         viewModel.onLoadStepCountData(ZonedDateTime.now(), DashboardViewModel.PeriodType.DAY)
 
-        chip_group.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.chip_step_counter -> {
-                    if (previousCheckedChipId != R.id.chip_step_counter) {
-                        previousCheckedChipId = R.id.chip_step_counter
-                        viewModel.onLoadStepCountData(ZonedDateTime.now(), DashboardViewModel.PeriodType.DAY)
-                    }
-                }
-                R.id.chip_google_fit -> {
-                    if (previousCheckedChipId != R.id.chip_google_fit) {
-                        previousCheckedChipId = R.id.chip_google_fit
-                        viewModel.onLoadGoogleFitData(ZonedDateTime.now(), DashboardViewModel.PeriodType.DAY)
-                    }
-                }
-                // 本当はselectionRequiredで対応したいがalphaなのでこれで凌ぐ
-                else -> chip_group.check(previousCheckedChipId)
-            }
+        step_counter_toggle_button.setOnClickListener {
+            viewModel.onLoadStepCountData(ZonedDateTime.now(), DashboardViewModel.PeriodType.DAY)
+        }
+        google_fit_toggle_button.setOnClickListener {
+            viewModel.onLoadGoogleFitData(ZonedDateTime.now(), DashboardViewModel.PeriodType.DAY)
         }
     }
 

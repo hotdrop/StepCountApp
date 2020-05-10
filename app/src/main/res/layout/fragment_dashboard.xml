@@ -7,38 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.dashboard.DashboardFragment">
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chip_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:checkedChip="@id/chip_step_counter"
-        app:chipSpacingHorizontal="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:singleSelection="true">
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_step_counter"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dashboard_screen_chip_sensor"
-            app:checkedIconEnabled="true" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_google_fit"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dashboard_screen_chip_google_fit"
-            app:checkedIconEnabled="true" />
-
-    </com.google.android.material.chip.ChipGroup>
-
     <TextView
         android:id="@+id/chart_title"
         android:layout_width="wrap_content"
@@ -51,7 +19,38 @@
         tools:text="2020年\n5月"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chip_group" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggle_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        app:checkedButton="@+id/step_counter_toggle_button"
+        app:singleSelection="true"
+        app:selectionRequired="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chart_title">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/step_counter_toggle_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:text="@string/dashboard_screen_toggle_sensor"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/google_fit_toggle_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:text="@string/dashboard_screen_toggle_google_fit"/>
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/bar_chart"
@@ -65,6 +64,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chart_title" />
+        app:layout_constraintTop_toBottomOf="@+id/toggle_group" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

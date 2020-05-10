@@ -67,7 +67,7 @@
         \n\n※解除後にこの画面を開くと再度連携が可能です。
     </string>
 
-    <string name="dashboard_screen_chip_sensor">端末センサー</string>
-    <string name="dashboard_screen_chip_google_fit">GoogleFit</string>
+    <string name="dashboard_screen_toggle_sensor">端末センサー</string>
+    <string name="dashboard_screen_toggle_google_fit">Google Fit</string>
 
 </resources>
