@@ -6,6 +6,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -19,6 +21,7 @@ import jp.hotdrop.stepcountapp.R
 import jp.hotdrop.stepcountapp.di.ViewModelFactory
 import jp.hotdrop.stepcountapp.di.component.component
 import jp.hotdrop.stepcountapp.services.StepCounterSensor
+import jp.hotdrop.stepcountapp.ui.setting.SettingsActivity
 import permissions.dispatcher.*
 import javax.inject.Inject
 
@@ -36,6 +39,21 @@ class MainActivity: AppCompatActivity() {
 
         initView()
         lifecycle.addObserver(stepCounterSensor)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                SettingsActivity.start(this)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun initView() {

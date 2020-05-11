@@ -3,6 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_google_fit">GoogleFit</string>
     <string name="title_dashboard">Dashboard</string>
+    <string name="title_settings">設定</string>
 
     <string name="device_screen_overview">歩数</string>
     <string name="device_screen_info_button">詳細情報</string>
@@ -69,5 +70,9 @@
 
     <string name="dashboard_screen_toggle_sensor">端末センサー</string>
     <string name="dashboard_screen_toggle_google_fit">Google Fit</string>
+
+    <string name="setting_screen_app_version_label">アプリバージョン</string>
+    <string name="setting_screen_licenses_label">オープンソースライセンス</string>
+    <string name="setting_screen_licenses_desc">利用OSSのライセンスを表示します。</string>
 
 </resources>
