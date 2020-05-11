@@ -30,10 +30,30 @@ android {
         }
     }
 
+    flavorDimensions 'default'
+    productFlavors {
+        develop {
+            dimension = 'default'
+        }
+        product {
+            dimension = 'default'
+        }
+    }
+
+    variantFilter { variant ->
+        variant.flavors*.name.each { flavorName ->
+            if ((flavorName.contains("develop") && variant.buildType.name == "release") ||
+                    (flavorName.contains("product") && variant.buildType.name == "debug")) {
+                setIgnore(true)
+            }
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
