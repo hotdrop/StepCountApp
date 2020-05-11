@@ -35,7 +35,9 @@ class GoogleFit @Inject constructor(
 
     private val options: FitnessOptions = FitnessOptions.builder()
         .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+        .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
         .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+        .addDataType(DataType.AGGREGATE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
         .build()
 
     private fun account(context: Context): GoogleSignInAccount {
@@ -69,13 +71,42 @@ class GoogleFit @Inject constructor(
 
     fun registerTodayCount(context: Context) {
         Timber.d("GoogleFitのHistoryClientリスナーを登録")
+
         Fitness.getHistoryClient(context, account(context))
             .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
             .addOnSuccessListener {
-                Timber.d("GoogleFitから今日のレスポンスがきました。")
+                Timber.d("GoogleFitから今日の歩数レスポンスがきました。")
                 val dataPoint = it.dataPoints?.firstOrNull()
-                postDataInPoint(dataPoint, ZonedDateTime.now())
+                postStepCountInPoint(dataPoint, ZonedDateTime.now())
             }
+
+        Fitness.getHistoryClient(context, account(context))
+            .readDailyTotal(DataType.TYPE_DISTANCE_DELTA)
+            .addOnSuccessListener {
+                Timber.d("GoogleFitから今日の距離レスポンスがきました。")
+                val dataPoint = it.dataPoints?.firstOrNull()
+                postDistanceInPoint(dataPoint, ZonedDateTime.now())
+            }
+    }
+
+    private fun postStepCountInPoint(dp: DataPoint?, dayAt: ZonedDateTime) {
+        val stepNum = dp?.getValue(Field.FIELD_STEPS)?.asInt()?.toLong() ?: 0
+        launch {
+            repository.saveStepNum(stepNum, dayAt)
+            repository.find(dayAt)?.let {
+                mutableCounter.postValue(it)
+            }
+        }
+    }
+
+    private fun postDistanceInPoint(dp: DataPoint?, dayAt: ZonedDateTime) {
+        val stepNum = dp?.getValue(Field.FIELD_DISTANCE)?.asFloat()?.toLong() ?: 0
+        launch {
+            repository.saveDistance(stepNum, dayAt)
+            repository.find(dayAt)?.let {
+                mutableCounter.postValue(it)
+            }
+        }
     }
 
     fun findPastStepCount(context: Context, targetAt: ZonedDateTime) {
@@ -99,18 +130,19 @@ class GoogleFit @Inject constructor(
             .readData(request)
             .addOnSuccessListener {
                 Timber.d("GoogleFitから過去のレスポンスがきました。")
-                val dataPoint = it.buckets?.firstOrNull()
-                    ?.getDataSet(DataType.AGGREGATE_STEP_COUNT_DELTA)
-                    ?.dataPoints?.firstOrNull()
-                postDataInPoint(dataPoint, targetAt)
+                it.buckets?.firstOrNull()?.let { bucket ->
+                    val dataPoint = bucket.getDataSet(DataType.AGGREGATE_STEP_COUNT_DELTA)?.dataPoints?.firstOrNull()
+                    postPastDataInPoint(dataPoint, targetAt)
+                }
             }
     }
 
-    private fun postDataInPoint(dp: DataPoint?, dayAt: ZonedDateTime) {
+    private fun postPastDataInPoint(dp: DataPoint?, dayAt: ZonedDateTime) {
         val stepNum = dp?.getValue(Field.FIELD_STEPS)?.asInt()?.toLong() ?: 0
+        val distance = dp?.getValue(Field.FIELD_DISTANCE)?.asFloat()?.toLong() ?: 0
 
         launch {
-            repository.save(stepNum, dayAt)
+            repository.save(stepNum, distance, dayAt)
             repository.find(dayAt)?.let {
                 mutableCounter.postValue(it)
             }

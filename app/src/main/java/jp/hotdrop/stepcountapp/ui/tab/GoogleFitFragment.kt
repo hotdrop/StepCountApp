@@ -99,6 +99,7 @@ class GoogleFitFragment : Fragment() {
                     if (isSelectToday(date)) {
                         googleFit.registerTodayCount(requireContext())
                     } else {
+
                         googleFit.findPastStepCount(requireContext(), date)
                     }
                 }
@@ -124,6 +125,7 @@ class GoogleFitFragment : Fragment() {
     private fun initStepCountView(dailyStepCount: DailyStepCount) {
         hideLoading()
         step_counter.text = dailyStepCount.stepNum.toFormatWithComma()
+        distance_label.text = getString(R.string.google_fit_screen_distance_label, dailyStepCount.distance.toFormatWithComma())
     }
 
     private fun isSelectToday(targetAt: ZonedDateTime): Boolean {
@@ -138,6 +140,7 @@ class GoogleFitFragment : Fragment() {
 
     private fun hideLoading() {
         step_counter.isVisible = true
+        distance_label.isVisible = true
         progress_bar.isVisible = false
     }
 

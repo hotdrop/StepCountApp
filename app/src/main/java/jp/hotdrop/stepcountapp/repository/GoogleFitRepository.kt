@@ -22,6 +22,7 @@ class GoogleFitRepository @Inject constructor(
             DailyStepCount(
                 ymdId = it.id,
                 stepNum = it.stepNum,
+                distance = it.distance,
                 dayAt = it.dayInstant.toZonedDateTime()
             )
         }
@@ -34,13 +35,32 @@ class GoogleFitRepository @Inject constructor(
 
         return db.selectAll(startAtDateTime.toInstant(), endAtDateTime.toInstant())
             .map {
-                DailyStepCount(it.id, it.stepNum, it.dayInstant.toZonedDateTime())
+                DailyStepCount(
+                    ymdId = it.id,
+                    stepNum = it.stepNum,
+                    distance = it.distance,
+                    dayAt = it.dayInstant.toZonedDateTime()
+                )
             }
     }
 
-    suspend fun save(stepNum: Long, dayAt: ZonedDateTime) {
+    suspend fun save(newStepNum: Long, newDistance: Long, dayAt: ZonedDateTime) {
         val key = dayAt.toLongYearMonthDay()
-        val entity = GoogleFitEntity(key, stepNum, dayAt.toInstant())
+        val entity = GoogleFitEntity(key, newStepNum, newDistance, dayAt.toInstant())
+        db.save(entity)
+    }
+
+    suspend fun saveStepNum(newStepNum: Long, dayAt: ZonedDateTime) {
+        val key = dayAt.toLongYearMonthDay()
+        val alreadyEntity = db.select(key) ?: GoogleFitEntity(key, 0, 0, dayAt.toInstant())
+        val entity = alreadyEntity.copy(stepNum = newStepNum)
+        db.save(entity)
+    }
+
+    suspend fun saveDistance(newDistance: Long, dayAt: ZonedDateTime) {
+        val key = dayAt.toLongYearMonthDay()
+        val alreadyEntity = db.select(key) ?: GoogleFitEntity(key, 0, 0, dayAt.toInstant())
+        val entity = alreadyEntity.copy(distance = newDistance)
         db.save(entity)
     }
 }

@@ -46,6 +46,7 @@
     </string>
     <string name="dialog_to_settings_button">端末のアプリ設定画面</string>
 
+    <string name="google_fit_screen_distance_label">移動距離: %1$s m</string>
     <string name="google_fit_screen_info_button">連携方法</string>
     <string name="google_fit_screen_info_title">Google Fitとの連携について</string>
     <string name="google_fit_screen_info_desc">

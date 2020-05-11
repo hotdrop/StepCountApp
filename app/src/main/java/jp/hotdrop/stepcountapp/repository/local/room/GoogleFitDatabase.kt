@@ -41,14 +41,10 @@ interface GoogleFitDao {
 data class GoogleFitEntity(
     @PrimaryKey val id: Long,
     val stepNum: Long,
+    val distance: Long,
     val dayInstant: Instant
 ) {
     companion object {
         const val TABLE_NAME = "google_fit_step_counter"
-        fun create(id: Long? = null, stepNum: Long): GoogleFitEntity {
-            val now = ZonedDateTime.now()
-            val key = id ?: now.toLongYearMonthDay()
-            return GoogleFitEntity(key, stepNum, now.toInstant())
-        }
     }
 }

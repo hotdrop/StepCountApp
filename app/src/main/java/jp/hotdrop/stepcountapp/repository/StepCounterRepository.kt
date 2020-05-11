@@ -37,7 +37,11 @@ class StepCounterRepository @Inject constructor(
 
         return db.selectAll(startAtDateTime.toInstant(), endAtDateTime.toInstant())
             .map {
-                DailyStepCount(it.id, it.stepNum, it.dayInstant.toZonedDateTime())
+                DailyStepCount(
+                    ymdId = it.id,
+                    stepNum = it.stepNum,
+                    dayAt = it.dayInstant.toZonedDateTime()
+                )
             }
     }
 
