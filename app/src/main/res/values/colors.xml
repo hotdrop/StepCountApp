@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#6DCD51</color>
     <color name="colorAccent">#137901</color>
 
+    <color name="ic_launcher_background">#3DDC84</color>
+
     <color name="accuracyHigh">@color/blue</color>
     <color name="accuracyMedium">#23B702</color>
     <color name="accuracyLow">@color/yellow</color>

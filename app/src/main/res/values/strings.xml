@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">歩数アプリ</string>
+    <string name="app_name">歩数</string>
     <string name="title_home">Home</string>
     <string name="title_google_fit">GoogleFit</string>
     <string name="title_dashboard">Dashboard</string>
