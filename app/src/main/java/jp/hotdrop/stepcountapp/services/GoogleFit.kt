@@ -20,6 +20,7 @@ import jp.hotdrop.stepcountapp.ui.BaseViewModel
 import kotlinx.coroutines.launch
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
+import java.lang.IllegalArgumentException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -118,7 +119,7 @@ class GoogleFit @Inject constructor(
                 Timber.d("DBから取得できたのでそのまま返します。")
                 mutableCounter.postValue(daily)
             } else {
-                Timber.d("DBに登録されていないので保存します。")
+                Timber.d("DBに登録されていないので取得します。")
                 registerPastCount(context, targetAt)
             }
         }
@@ -139,7 +140,13 @@ class GoogleFit @Inject constructor(
 
     private fun postPastDataInPoint(dp: DataPoint?, dayAt: ZonedDateTime) {
         val stepNum = dp?.getValue(Field.FIELD_STEPS)?.asInt()?.toLong() ?: 0
-        val distance = dp?.getValue(Field.FIELD_DISTANCE)?.asFloat()?.toLong() ?: 0
+        // getValueで取得できないフィールドを指定すると例外になる。該当フィールドが存在するかのチェックもできないので仕方なくtrycatchで対応する
+        // どうやらFIELD_DISTANCEはGoogleFitの権限許可をした日以降のデータしかアクセスできないようだ。
+        val distance: Long = try {
+            dp?.getValue(Field.FIELD_DISTANCE)?.asFloat()?.toLong() ?: 0
+        } catch (e: IllegalArgumentException) {
+            0
+        }
 
         launch {
             repository.save(stepNum, distance, dayAt)
