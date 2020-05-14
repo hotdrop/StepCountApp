@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import jp.hotdrop.stepcountapp.BuildConfig
 import jp.hotdrop.stepcountapp.R
 import jp.hotdrop.stepcountapp.di.component.component
@@ -36,7 +36,7 @@ class SettingsActivity : AppCompatActivity() {
 
         app_version.text = BuildConfig.VERSION_NAME
         licenses_area.setOnClickListener {
-            Snackbar.make(snack_bar_area, "未実装です。", Snackbar.LENGTH_SHORT).show()
+            startActivity(Intent(this, OssLicensesMenuActivity::class.java))
         }
     }
 
