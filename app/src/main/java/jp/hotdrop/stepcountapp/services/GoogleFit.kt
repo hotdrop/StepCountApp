@@ -90,6 +90,58 @@ class GoogleFit @Inject constructor(
             }
     }
 
+    fun findPastStepCount(context: Context, targetAt: ZonedDateTime) {
+        launch {
+            // TODO 過去7日間くらい一気にとった方がいいかも
+            Timber.d("$targetAt の歩数をDBから取得します。")
+            val daily = repository.find(targetAt)
+            if (daily != null) {
+                Timber.d("DBから取得できたのでそのまま返します。")
+                mutableCounter.postValue(daily)
+            } else {
+                Timber.d("DBに登録されていないので取得します。")
+                registerPastCount(context, targetAt)
+                registerPastDistance(context, targetAt)
+            }
+        }
+    }
+
+    private fun registerPastCount(context: Context, targetAt: ZonedDateTime) {
+        val request = DataReadRequest.Builder()
+            .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
+            .setTimeRange(targetAt.toStartDateTime().toEpochSecond(), targetAt.toEndDateTime().toEpochSecond(), TimeUnit.SECONDS)
+            .bucketByTime(1, TimeUnit.DAYS)
+            .build()
+
+        Fitness.getHistoryClient(context, account(context))
+            .readData(request)
+            .addOnSuccessListener {
+                Timber.d("GoogleFitから過去のレスポンスがきました。")
+                it.buckets?.firstOrNull()?.let { bucket ->
+                    val dataPoint = bucket.getDataSet(DataType.AGGREGATE_STEP_COUNT_DELTA)?.dataPoints?.firstOrNull()
+                    postStepCountInPoint(dataPoint, targetAt)
+                }
+            }
+    }
+
+    private fun registerPastDistance(context: Context, targetAt: ZonedDateTime) {
+        val request = DataReadRequest.Builder()
+            .aggregate(DataType.TYPE_DISTANCE_DELTA, DataType.AGGREGATE_DISTANCE_DELTA)
+            .setTimeRange(targetAt.toStartDateTime().toEpochSecond(), targetAt.toEndDateTime().toEpochSecond(), TimeUnit.SECONDS)
+            .bucketByTime(1, TimeUnit.DAYS)
+            .build()
+
+        Fitness.getHistoryClient(context, account(context))
+            .readData(request)
+            .addOnSuccessListener {
+                Timber.d("GoogleFitから過去のレスポンスがきました。")
+                it.buckets?.firstOrNull()?.let { bucket ->
+                    val dataPoint = bucket.getDataSet(DataType.AGGREGATE_DISTANCE_DELTA)?.dataPoints?.firstOrNull()
+                    postDistanceInPoint(dataPoint, targetAt)
+                }
+            }
+    }
+
     private fun postStepCountInPoint(dp: DataPoint?, dayAt: ZonedDateTime) {
         val stepNum = dp?.getValue(Field.FIELD_STEPS)?.asInt()?.toLong() ?: 0
         launch {
@@ -108,59 +160,5 @@ class GoogleFit @Inject constructor(
                 mutableCounter.postValue(it)
             }
         }
-    }
-
-    fun findPastStepCount(context: Context, targetAt: ZonedDateTime) {
-        launch {
-            // TODO 過去7日間くらい一気にとった方がいいかも
-            Timber.d("$targetAt の歩数をDBから取得します。")
-            val daily = repository.find(targetAt)
-            if (daily != null) {
-                Timber.d("DBから取得できたのでそのまま返します。")
-                mutableCounter.postValue(daily)
-            } else {
-                Timber.d("DBに登録されていないので取得します。")
-                registerPastCount(context, targetAt)
-            }
-        }
-    }
-
-    private fun registerPastCount(context: Context, targetAt: ZonedDateTime) {
-        val request = requestHistoryData(targetAt)
-        Fitness.getHistoryClient(context, account(context))
-            .readData(request)
-            .addOnSuccessListener {
-                Timber.d("GoogleFitから過去のレスポンスがきました。")
-                it.buckets?.firstOrNull()?.let { bucket ->
-                    val dataPoint = bucket.getDataSet(DataType.AGGREGATE_STEP_COUNT_DELTA)?.dataPoints?.firstOrNull()
-                    postPastDataInPoint(dataPoint, targetAt)
-                }
-            }
-    }
-
-    private fun postPastDataInPoint(dp: DataPoint?, dayAt: ZonedDateTime) {
-        val stepNum = dp?.getValue(Field.FIELD_STEPS)?.asInt()?.toLong() ?: 0
-        // getValueで取得できないフィールドを指定すると例外になる。該当フィールドが存在するかのチェックもできないので仕方なくtrycatchで対応する
-        // どうやらFIELD_DISTANCEはGoogleFitの権限許可をした日以降のデータしかアクセスできないようだ。
-        val distance: Long = try {
-            dp?.getValue(Field.FIELD_DISTANCE)?.asFloat()?.toLong() ?: 0
-        } catch (e: IllegalArgumentException) {
-            0
-        }
-
-        launch {
-            repository.save(stepNum, distance, dayAt)
-            repository.find(dayAt)?.let {
-                mutableCounter.postValue(it)
-            }
-        }
-    }
-
-    private fun requestHistoryData(targetAt: ZonedDateTime): DataReadRequest {
-        return DataReadRequest.Builder()
-            .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
-            .setTimeRange(targetAt.toStartDateTime().toEpochSecond(), targetAt.toEndDateTime().toEpochSecond(), TimeUnit.SECONDS)
-            .bucketByTime(1, TimeUnit.DAYS)
-            .build()
     }
 }
